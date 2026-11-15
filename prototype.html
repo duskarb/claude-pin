@@ -1,0 +1,74 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>프로토타입 — Claude Pin</title><meta name="description" content="대화의 한 문장을 맥락과 함께 저장하는 Claude Pin UX 디자인 프로젝트. 여남규의 포트폴리오."><meta name="theme-color" content="#faf9f5"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="portfolio.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="prototype.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="topbar"><div class="shell"><a class="brand" href="index.html">Claude Pin<span>·</span></a><nav aria-label="주 메뉴"><a href="index.html" >포트폴리오</a><a href="prototype.html" aria-current="page">프로토타입</a><a href="components.html" >컴포넌트</a><a class="download" href="downloads/claude-pin-portfolio.pdf" download>PDF ↓</a></nav></div></header><main id="main" class="prototype-main">  <section id="proto" class="wide">
+    <h2>문장을 선택하고, 오른쪽 보드로 끌어보세요.</h2>
+    <p class="proto-lead">아래 화면은 이미지가 아니라 실제로 동작합니다. 답변의 문장을 선택해 오른쪽으로 끌어 보세요. 터치 화면에서는 문장을 선택하면 나오는 핀 버튼을 누르면 됩니다.</p>
+    <ol class="guide" aria-label="따라 해 보기">
+      <li data-step="capture"><em>Capture</em> 답변에서 문장을 선택해 끌어다 놓기</li>
+      <li data-step="organize"><em>Organize</em> 보드를 넓혀 검색하고 댓글 달기</li>
+      <li data-step="return"><em>Return</em> 핀의 세션 링크로 원래 문장에 돌아가기</li>
+    </ol>
+
+    <div class="app" id="app" data-panel="closed">
+      <aside class="rail" aria-label="세션">
+        <button class="rail-btn" id="btnSessions" aria-expanded="false" aria-controls="sessionList" title="세션 목록"><img src="assets/icons/sidebar.svg" alt="" width="20" height="20">
+        </button>
+        <button class="rail-btn" id="btnBoard" title="핀 보드 열기"><img src="assets/icons/chats.svg" alt="" width="20" height="20">
+          <span class="count" id="railCount">0</span>
+        </button>
+        <div class="session-list" id="sessionList" hidden></div>
+        <img class="avatar" src="assets/icons/avatar.svg" width="28" height="28" alt="프로필"><button class="rail-btn" id="btnReset" title="프로토타입 초기화">
+          <svg viewBox="0 0 20 20"><path d="M4 10a6 6 0 1 0 2-4.5M4 4v3.5h3.5"/></svg>
+        </button>
+      </aside>
+
+      <div class="chat" id="chat">
+        <div class="chat-head">
+          <span id="chatTitle"></span>
+          <button class="ghost" id="btnPanel" aria-expanded="false" aria-controls="panel">핀 보드</button>
+        </div>
+        <div class="chat-scroll" id="chatScroll" tabindex="0" aria-label="대화"></div>
+        <form class="composer" id="composer">
+          <label class="sr" for="input">메시지 입력</label>
+          <textarea id="input" rows="1" placeholder="Reply to Claude"></textarea>
+          <div class="composer-row">
+            <span class="plus" aria-hidden="true">+</span>
+            <span class="model">Sonnet 4.5</span>
+            <button type="submit" aria-label="보내기"><svg viewBox="0 0 20 20"><path d="M10 16V4M5 9l5-5 5 5"/></svg></button>
+          </div>
+        </form>
+        <p class="chat-note">예시 응답만 나오는 프로토타입입니다. 실제 모델에 연결되어 있지 않습니다.</p>
+      </div>
+
+      <section class="panel" id="panel" aria-label="핀 보드">
+        <div class="panel-head">
+          <h3>핀 보드</h3>
+          <div class="panel-tools">
+            <button class="icon" id="btnExpand" title="보드 넓히기" aria-label="보드 넓히기"><img src="assets/icons/expand.svg" alt="" width="20" height="20">
+            </button>
+            <button class="icon" id="btnClose" title="보드 닫기" aria-label="보드 닫기"><img src="assets/icons/x.svg" alt="" width="20" height="20">
+            </button>
+          </div>
+        </div>
+        <div class="panel-bar">
+          <h3 class="board-title">핀 보드</h3>
+          <label class="search"><span class="sr">핀 검색</span>
+            <img src="assets/icons/search-24.svg" alt="" width="24" height="24">
+            <input id="search" placeholder="핀 검색" type="search" aria-label="핀 검색">
+          </label>
+          <button class="icon" id="btnSort" title="놓은 순서로 보는 중. 누르면 세션별로 묶습니다" aria-label="정렬 바꾸기"><img src="assets/icons/filter-24.svg" alt="" width="24" height="24">
+          </button>
+        </div>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+    <p class="disclaimer">학생 개인의 컨셉 프로젝트이며 Anthropic과 관련이 없습니다. 대화 내용은 예시이고, 핀은 이 브라우저에만 저장됩니다.</p>
+  </section>
+
+</main><button class="tray" id="tray" aria-label="핀 보드에서 보기">
+  <svg viewBox="0 0 20 20"><path d="M10 12.5V18M6 12.5h8l-1.2-3.2V4.5l1-1.5H6.2l1 1.5v4.8z"/></svg>
+  <span id="trayText">핀 0개</span>
+</button>
+<button class="pop" id="pop" hidden>핀하기</button>
+<div class="drag-chip" id="dragChip" aria-hidden="true"></div>
+<div class="sr" aria-live="polite" id="live"></div>
+
+<script src="app.js"></script><footer class="shell"><span>여남규 · Namkyu Yeo<br>KAIST ID307 · 2026</span><span>학생 개인 컨셉 프로젝트 · Anthropic과 무관<br><a href="https://www.figma.com/design/IIHWlB9DJGK7p6CIbemmWu/for-Claude?node-id=4133-1061" target="_blank" rel="noopener">Figma 원본 ↗</a> · <a href="https://github.com/duskarb/claude-pin">GitHub ↗</a></span></footer></body></html>

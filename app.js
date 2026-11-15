@@ -46,6 +46,7 @@
   ];
 
   const SEEDS = [
+    { session: 'plotter', m: 1, p: 1, text: '속도 자체가 하나의 시간 감각이 될 수 있다는 점이 인상적이에요. 펜의 속도를 제어하면 시각적 리듬을 만들 수 있습니다.', ago: 7 * 60e3, comments: ['속도에 따른 소리 변화 활용'] },
     { session: 'brutal', m: 1, p: 3, text: '폰트가 투명해질수록 콘텐츠의 날것이 드러나요.', ago: 26 * 3600e3, comments: ['포트폴리오 본문 서체 고를 때 참고'] },
     { session: 'brutal', m: 1, p: 2, text: '브루탈리즘은 밀도 자체가 의도입니다.', ago: 26 * 3600e3 + 9e4, comments: [] },
     { session: 'role', m: 1, p: 1, text: '문제를 잘 발견하는 사람이 좋은 결과물을 얻습니다.', ago: 3 * 3600e3, comments: [] },
@@ -149,8 +150,9 @@
       if (m.role === 'ai') {
         const act = document.createElement('div');
         act.className = 'msg-actions'; act.setAttribute('aria-hidden', 'true');
-        act.innerHTML = '<svg viewBox="0 0 20 20"><path d="M6 9v7H3V9zM6 9l3-6c1.5 0 2 1 2 2v3h4.5a1.5 1.5 0 0 1 1.4 2l-1.4 5a1.5 1.5 0 0 1-1.4 1H6"/></svg><svg viewBox="0 0 20 20"><path d="M14 11V4h3v7zM14 11l-3 6c-1.5 0-2-1-2-2v-3H4.5a1.5 1.5 0 0 1-1.4-2l1.4-5a1.5 1.5 0 0 1 1.4-1H14"/></svg><svg viewBox="0 0 20 20"><rect x="7" y="7" width="9" height="9" rx="2"/><path d="M4 13V5a1 1 0 0 1 1-1h8"/></svg><svg viewBox="0 0 20 20"><path d="M16 10a6 6 0 1 1-2-4.5M16 4v3.5h-3.5"/></svg>';
+        act.innerHTML = ['thumbsup','thumbsdown','copy','arrowclockwise'].map(name => `<img src="assets/icons/${name}.svg" alt="" width="14" height="14">`).join('');
         box.appendChild(act);
+        const spark = document.createElement("img"); spark.src="assets/icons/spark.svg"; spark.width=28; spark.height=28; spark.alt=""; spark.className="spark"; box.appendChild(spark);
       }
       wrap.appendChild(box);
     });
@@ -431,7 +433,7 @@
 
   // Return: pin → the exact sentence it came from
   function goBack(p) {
-    setPanel('closed');
+    setPanel(window.innerWidth > 760 ? 'side' : 'closed');
     if (p.src.type === 'chat') setSession(p.src.session);
     stepDone('return');
     requestAnimationFrame(() => {
@@ -497,5 +499,6 @@
   renderChat();
   renderAllPinnable();
   renderCards();
+  if (window.innerWidth > 760) setPanel('side');
   setInterval(() => { if (state.panel !== 'closed' && !cards.contains(document.activeElement)) renderCards(); }, 60000);
 })();
