@@ -10,7 +10,7 @@
   --paper-line: #e3e0d5;
   --ink-text: #141413;
   --ink-mute: #5e5d59;
-  --mark: #f3cfc0;
+  --mark: #f8d6ab;
   --pin: #d97757;
   --sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --verb: "DM Sans", var(--sans);
@@ -339,3 +339,50 @@ footer a:first-child { margin-left: 0; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
 }
+
+/* ── Final design alignment: docked board, insertion line, card details ── */
+.chat { transition: margin-right .42s var(--ease); }
+.app[data-panel="side"] .chat { margin-right: 372px; }
+.panel { top: 14px; right: 12px; bottom: 14px; width: 352px; border-radius: 22px; background: #f5f3ea; box-shadow: 0 8px 28px rgba(20,20,19,.10); }
+.app[data-panel="full"] .panel { width: calc(100% - 76px); }
+.panel-head { position: relative; justify-content: center; padding: 16px 12px 10px; }
+.panel-head h3 { font-weight: 500; }
+.panel-tools { position: absolute; right: 10px; top: 10px; }
+.app[data-panel="side"] #btnClose { display: none; }
+.panel-bar { order: 3; display: flex; align-items: center; gap: 12px; padding: 10px 16px 16px; }
+.panel-bar .board-title { display: none; }
+.panel-bar .search { display: flex; flex: 1; padding: 11px 16px; border-radius: 16px; background: #faf9f5; }
+.panel-bar .search svg { width: 20px; height: 20px; }
+.panel-bar .search input { width: 100%; }
+#btnSort, .app[data-panel="full"] #btnSort { display: none; }
+.app[data-panel="full"] .panel-head { justify-content: flex-end; min-height: 44px; }
+.app[data-panel="full"] .panel-head h3 { display: none; }
+.app[data-panel="full"] .panel-bar { order: 0; width: min(100% - 48px, 984px); margin: 12px auto 8px; padding: 0; gap: 28px; }
+.app[data-panel="full"] .panel-bar .board-title { display: block; font-size: 26px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap; }
+.app[data-panel="full"] .panel-bar .search { flex: 0 1 380px; border-radius: 999px; padding: 7px 16px; }
+.app[data-panel="full"] #btnSort { display: grid; margin-left: auto; }
+.app[data-panel="full"] .cards { width: min(100% - 48px, 984px); margin: 0 auto; padding: 12px 0 24px; columns: 3 280px; column-gap: 18px; }
+.cards { padding: 4px 16px 8px; }
+.card { border-radius: 20px; border-color: #ebe8dd; padding: 18px 16px 12px; margin-bottom: 16px; transition: background .15s, box-shadow .15s; }
+.card:hover, .card.focus { background: #f0eee6; border-color: #dedbcf; box-shadow: inset 0 0 0 1px #dedbcf; }
+.card-text { line-height: 1.5; margin-bottom: 14px; }
+.card-src { padding-bottom: 11px; border-bottom-color: #dedbcf; }
+.src-link::after { content: " \2192"; display: inline; width: auto; height: auto; margin: 0; border: 0; transform: none; }
+.cmt { padding-top: 10px; color: #87867f; }
+.card-add { padding-top: 9px; font-size: 11px; }
+.card-del { background: transparent; }
+.insert { position: relative; height: 0; margin: -6px 0 10px; border-top: 2px solid var(--pin); break-inside: avoid; }
+.insert::before { content: ""; position: absolute; left: -5px; top: -6px; width: 10px; height: 10px; border-radius: 50%; background: var(--pin); }
+.insert.static { width: 220px; margin: 0; }
+mark.pin-mark { border-radius: 4px; padding: 3px 1px; }
+mark.pin-mark.peek { box-shadow: 0 0 0 3px rgba(217,119,87,.4); }
+.msg-actions { display: flex; gap: 14px; margin-top: 12px; color: #87867f; }
+.msg-actions svg { width: 16px; height: 16px; }
+.composer { padding: 16px 16px 12px; border-radius: 20px; margin-bottom: 8px; }
+.composer-row { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.composer-row .plus { font-size: 22px; line-height: 1; color: #5e5d59; margin-right: auto; }
+.composer-row .model { font-family: Georgia, "Times New Roman", serif; font-size: 14px; color: #3d3d3a; }
+.composer button { position: static; background: #c6613f; }
+.chat-note { margin: 0 0 10px; text-align: center; font-size: 11px; color: #a09e93 !important; }
+.wf.color .wf-panel u.drop { height: 2px; background: var(--pin); outline: 0; border-radius: 0; }
+@media (max-width: 760px) { .app[data-panel="side"] .chat { margin-right: 0; } .panel { width: calc(100% - 20px); right: 10px; } }

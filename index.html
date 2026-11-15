@@ -160,7 +160,7 @@
         </div>
         <div class="v-text">
           <h3>4월 16일, 드래그와 슬라이드 보드</h3>
-          <p data-pinnable data-key="v3" data-label="설계 과정">버튼을 없앴습니다. 문장을 선택해 끌면 보드가 옆에서 들어오고, 놓으면 핀이 됩니다. 저장 단위가 문장이 되었고, 이름도 메모에서 핀으로 바꿨습니다.</p>
+          <p data-pinnable data-key="v3" data-label="설계 과정">버튼을 없앴습니다. 문장을 선택해 끌면 보드가 옆에서 들어오고, 카드 사이에 놓으면 그 자리에 핀이 생깁니다. 저장 단위가 문장이 되었고, 이름도 메모에서 핀으로 바꿨습니다.</p>
         </div>
       </li>
     </ol>
@@ -220,21 +220,20 @@
         <div class="chat-scroll" id="chatScroll" tabindex="0" aria-label="대화"></div>
         <form class="composer" id="composer">
           <label class="sr" for="input">메시지 입력</label>
-          <textarea id="input" rows="1" placeholder="이어서 물어보기"></textarea>
-          <span class="composer-note">예시 응답만 나오는 프로토타입입니다</span>
-          <button type="submit" aria-label="보내기"><svg viewBox="0 0 20 20"><path d="M10 16V4M5 9l5-5 5 5"/></svg></button>
+          <textarea id="input" rows="1" placeholder="Reply to Claude"></textarea>
+          <div class="composer-row">
+            <span class="plus" aria-hidden="true">+</span>
+            <span class="model">Sonnet 4.5</span>
+            <button type="submit" aria-label="보내기"><svg viewBox="0 0 20 20"><path d="M10 16V4M5 9l5-5 5 5"/></svg></button>
+          </div>
         </form>
+        <p class="chat-note">예시 응답만 나오는 프로토타입입니다. 실제 모델에 연결되어 있지 않습니다.</p>
       </div>
 
       <section class="panel" id="panel" aria-label="핀 보드">
         <div class="panel-head">
           <h3>핀 보드</h3>
           <div class="panel-tools">
-            <label class="search"><span class="sr">핀 검색</span>
-              <svg viewBox="0 0 20 20"><circle cx="9" cy="9" r="5"/><path d="M13 13l4 4"/></svg>
-              <input id="search" type="search" placeholder="핀 검색">
-            </label>
-            <button class="ghost" id="btnSort" title="정렬 바꾸기">최신순</button>
             <button class="icon" id="btnExpand" title="보드 넓히기" aria-label="보드 넓히기">
               <svg viewBox="0 0 20 20"><path d="M12 4h4v4M16 4l-5 5M8 16H4v-4M4 16l5-5"/></svg>
             </button>
@@ -243,7 +242,16 @@
             </button>
           </div>
         </div>
-        <div class="dropzone" id="dropzone">여기에 놓으면 핀이 됩니다</div>
+        <div class="panel-bar">
+          <h3 class="board-title">핀 보드</h3>
+          <label class="search"><span class="sr">핀 검색</span>
+            <svg viewBox="0 0 20 20"><circle cx="9" cy="9" r="5"/><path d="M13 13l4 4"/></svg>
+            <input id="search" type="search" aria-label="핀 검색">
+          </label>
+          <button class="icon" id="btnSort" title="놓은 순서로 보는 중. 누르면 세션별로 묶습니다" aria-label="정렬 바꾸기">
+            <svg viewBox="0 0 20 20"><path d="M3 6h8M15 6h2M3 14h2M9 14h8"/><circle cx="13" cy="6" r="2"/><circle cx="7" cy="14" r="2"/></svg>
+          </button>
+        </div>
         <div class="cards" id="cards"></div>
       </section>
     </div>
@@ -256,15 +264,15 @@
     <div class="parts">
       <figure><div class="part"><mark class="pin-mark">핀한 문장</mark></div><figcaption><b>하이라이트</b>핀한 문장이 답변 안에 남는 표시</figcaption></figure>
       <figure><div class="part"><span class="drag-chip static">속도 자체가 하나의 시간 감각…</span></div><figcaption><b>드래그 카드</b>끌려가는 동안의 반투명 문장</figcaption></figure>
-      <figure><div class="part"><div class="dropzone show static">여기에 놓으면 핀이 됩니다</div></div><figcaption><b>드롭 슬롯</b>보드 맨 위의 놓을 자리</figcaption></figure>
-      <figure><div class="part"><div class="card static"><p class="card-text">펜의 속도를 제어하면 시각적 리듬을 만들 수 있습니다.</p><div class="card-src"><span class="src-link">펜 플로터 시계</span><time>7분 전</time></div><div class="card-add">댓글 추가</div></div></div><figcaption><b>핀 카드</b>문장, 세션 링크, 댓글</figcaption></figure>
+      <figure><div class="part"><div class="insert static"></div></div><figcaption><b>삽입선</b>카드 사이에 놓을 자리를 알려 주는 선</figcaption></figure>
+      <figure><div class="part"><div class="card static"><p class="card-text">펜의 속도를 제어하면 시각적 리듬을 만들 수 있습니다.</p><div class="card-src"><span class="src-link">펜 플로터 시계</span><time>7분전</time></div><div class="card-add">댓글 추가</div></div></div><figcaption><b>핀 카드</b>문장, 세션 링크, 댓글</figcaption></figure>
       <figure><div class="part"><span class="src-link solo">펜 플로터 시계</span></div><figcaption><b>세션 링크</b>원래 문장으로 돌아가는 입구</figcaption></figure>
     </div>
     <table class="tokens">
       <caption>색 토큰</caption>
       <tbody>
         <tr><td><i style="background:#faf9f5"></i>surface/chat</td><td><i style="background:#f0eee6"></i>surface/board</td><td><i style="background:#ffffff"></i>surface/card</td></tr>
-        <tr><td><i style="background:#f3cfc0"></i>pin/mark</td><td><i style="background:#d97757"></i>pin/accent</td><td><i style="background:#141413"></i>text/primary</td></tr>
+        <tr><td><i style="background:#f8d6ab"></i>pin/mark</td><td><i style="background:#d97757"></i>pin/accent</td><td><i style="background:#141413"></i>text/primary</td></tr>
       </tbody>
     </table>
   </section>

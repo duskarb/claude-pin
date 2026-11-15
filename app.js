@@ -71,7 +71,7 @@
 
   const $ = (id) => document.getElementById(id);
   const app = $('app'), chatScroll = $('chatScroll'), cards = $('cards'), panel = $('panel');
-  const dropzone = $('dropzone'), tray = $('tray'), pop = $('pop'), chip = $('dragChip'), live = $('live');
+  const tray = $('tray'), pop = $('pop'), chip = $('dragChip'), live = $('live');
 
   function load() {
     try {
@@ -146,6 +146,12 @@
         }
         box.appendChild(p);
       });
+      if (m.role === 'ai') {
+        const act = document.createElement('div');
+        act.className = 'msg-actions'; act.setAttribute('aria-hidden', 'true');
+        act.innerHTML = '<svg viewBox="0 0 20 20"><path d="M6 9v7H3V9zM6 9l3-6c1.5 0 2 1 2 2v3h4.5a1.5 1.5 0 0 1 1.4 2l-1.4 5a1.5 1.5 0 0 1-1.4 1H6"/></svg><svg viewBox="0 0 20 20"><path d="M14 11V4h3v7zM14 11l-3 6c-1.5 0-2-1-2-2v-3H4.5a1.5 1.5 0 0 1-1.4-2l1.4-5a1.5 1.5 0 0 1 1.4-1H14"/></svg><svg viewBox="0 0 20 20"><rect x="7" y="7" width="9" height="9" rx="2"/><path d="M4 13V5a1 1 0 0 1 1-1h8"/></svg><svg viewBox="0 0 20 20"><path d="M16 10a6 6 0 1 1-2-4.5M16 4v3.5h-3.5"/></svg>';
+        box.appendChild(act);
+      }
       wrap.appendChild(box);
     });
     chatScroll.replaceChildren(wrap);
@@ -242,12 +248,12 @@
     return { el, key: el.dataset.key, start, end: start + text.length, text, src, rect: rr.getBoundingClientRect() };
   }
 
-  function commit(s) {
+  function commit(s, at) {
     if (!s) return null;
     const dup = state.pins.find((p) => p.key === s.key && p.start < s.end && s.start < p.end);
     if (dup) { focusCard(dup.id); say('이미 핀한 문장입니다'); return dup; }
     const pin = { id: 'p' + Date.now().toString(36), key: s.key, start: s.start, end: s.end, text: s.text, src: s.src, t: Date.now(), comments: [] };
-    state.pins.unshift(pin);
+    state.pins.splice(at ?? 0, 0, pin);
     save();
     window.getSelection()?.removeAllRanges();
     hidePop();
@@ -293,7 +299,6 @@
     try { e.dataTransfer.setDragImage(chip, 18, 20); } catch (_) {}
     if (s.src.type === 'chat') {
       if (state.panel === 'closed') { setPanel('side'); autoClose = true; }
-      dropzone.classList.add('show');
     } else {
       tray.classList.add('armed');
       $('trayText').textContent = '여기에 놓아 핀하기';
@@ -301,7 +306,7 @@
   });
   document.addEventListener('dragend', () => {
     pending = null;
-    dropzone.classList.remove('show', 'over');
+    insertLine.remove();
     tray.classList.remove('armed', 'over');
     updateCounts();
   });
@@ -310,7 +315,22 @@
     el.addEventListener('dragleave', (e) => { if (!el.contains(e.relatedTarget)) overEl.classList.remove('over'); });
     el.addEventListener('drop', (e) => { if (!pending) return; e.preventDefault(); commit(pending); });
   }
-  dropTarget(panel, dropzone);
+  // Insertion line: the pin lands between the cards where it is dropped
+  const insertLine = document.createElement('div');
+  insertLine.className = 'insert';
+  let insertAt = 0;
+  panel.addEventListener('dragover', (e) => {
+    if (!pending) return;
+    e.preventDefault(); e.dataTransfer.dropEffect = 'copy';
+    const els = [...cards.querySelectorAll('.card')];
+    let i = els.findIndex((c) => { const r = c.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
+    if (i < 0) i = els.length;
+    insertAt = i;
+    const ref = els[i] || null;
+    if (insertLine.parentNode !== cards || insertLine.nextElementSibling !== ref) cards.insertBefore(insertLine, ref);
+  });
+  panel.addEventListener('dragleave', (e) => { if (!panel.contains(e.relatedTarget)) insertLine.remove(); });
+  panel.addEventListener('drop', (e) => { if (!pending) return; e.preventDefault(); insertLine.remove(); commit(pending, insertAt); });
   dropTarget(tray, tray);
 
   // The board steps back when the cursor returns to the conversation
@@ -337,7 +357,6 @@
   function renderCards(freshId) {
     const q = state.query.trim().toLowerCase();
     let list = state.pins.filter((p) => !q || [p.text, p.src.label, ...p.comments.map((c) => c.text)].join(' ').toLowerCase().includes(q));
-    list = list.slice().sort((a, b) => b.t - a.t);
     const frag = document.createDocumentFragment();
     if (!list.length) {
       const e = document.createElement('p');
@@ -371,6 +390,9 @@
       <button class="card-del" aria-label="핀 삭제" title="핀 삭제"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></svg></button>`;
     el.querySelector('.src-link').onclick = () => goBack(p);
     el.querySelector('.card-del').onclick = () => removePin(p.id);
+    const peek = (on) => document.querySelectorAll(`mark[data-pin="${p.id}"]`).forEach((m) => m.classList.toggle('peek', on));
+    el.addEventListener('mouseenter', () => peek(true));
+    el.addEventListener('mouseleave', () => peek(false));
     const add = el.querySelector('.card-add');
     add.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter' || e.isComposing) return;
@@ -447,7 +469,7 @@
   $('btnClose').onclick = () => setPanel('closed');
   $('btnSort').onclick = () => {
     state.sort = state.sort === 'new' ? 'session' : 'new';
-    $('btnSort').textContent = state.sort === 'new' ? '최신순' : '세션별';
+    $('btnSort').title = state.sort === 'new' ? '놓은 순서로 보는 중. 누르면 세션별로 묶습니다' : '세션별로 묶어 보는 중. 누르면 놓은 순서로 봅니다';
     renderCards();
   };
   $('search').addEventListener('input', (e) => { state.query = e.target.value; if (state.query.trim()) stepDone('organize'); renderCards(); });
