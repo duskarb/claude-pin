@@ -2,7 +2,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[(.+?)\]\(((?:https?:|mailto:)[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[(.+?)\]\(((?:https?:|mailto:)[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/ ?\{\{(.+?)\}\}/g, ' <span class="cite">$1</span>');
 const norm = s => s.replace(/\s+/g, ' ').trim();
 const mobile = matchMedia('(max-width:760px)');
 /* ---------------- content ---------------- */
@@ -47,7 +47,7 @@ ${isDrawer ? '' : `<button data-act="plug">${ico('plug')}플러그인</button>`}
 <div class="recents">
 <div class="sec">고정됨 ${ico('down')}</div>
 <button class="pj" data-act="proj">${ico('stack')}여남규 알아보기</button>
-<div class="tree">${CHATS.map(c => `<button data-chat="${c.id}" class="${c.id===current?'on':''}">${esc(c.title)}</button>`).join('')}</div>
+<div class="tree">${CHATS.map(c => `<button data-chat="${c.id}" class="${c.id===current?'on':''}"><span class="tt">${esc(c.title)}</span>${ico('dots')}</button>`).join('')}</div>
 <div class="sec">최근 항목 ${ico('down')}</div>
 <div class="rec"><button data-act="other">인턴 지원자 포트폴리오 비교</button><button data-act="other">디자인 면접 질문 정리</button></div>
 </div>
@@ -82,7 +82,7 @@ if (t === 'p') html += `<p class="blk" data-b="${bi++}">${md(v)}</p>`;
 else if (t === 'h') html += `<h4 class="blk" data-b="${bi++}">${md(v)}</h4>`;
 else html += '<ul>' + v.map(x => `<li class="blk" data-b="${bi++}">${md(x)}</li>`).join('') + '</ul>';
 }
-html += `</div><div class="actions"><span>${ico('copy')}</span><span>${ico('speak')}</span><span>${ico('thumb')}</span><span>${ico('thumbd')}</span><span>${ico('retry')}</span></div>`;
+html += `</div><div class="actions"><span>${ico('copy')}</span><span>${ico('speak')}</span><span>${ico('thumb')}</span><span>${ico('thumbd')}</span><span>${ico('retry')}</span>${c.ago ? `<em class="ago">${c.ago}</em>` : ''}</div>`;
 }
 $('thread').innerHTML = html;
 const x = $('mcoachX'); if (x) x.onclick = () => { mcoachClosed = true; $('mcoach').remove(); };
@@ -471,11 +471,13 @@ setTimeout(() => { pins = pins.filter(p => p.id !== id); save(); renderBoard(); 
 });
 /* composer */
 $('inp').addEventListener('input', e => $('send').classList.toggle('ok', !!e.target.value.trim()));
+const fitInp = () => { const t = $('inp'); t.style.height = '26px'; t.style.height = Math.min(t.scrollHeight, 180) + 'px'; t.style.overflowY = t.scrollHeight > 180 ? 'auto' : 'hidden'; };
+$('inp').addEventListener('input', fitInp);
 function send(){
 const v = $('inp').value.trim(); if (!v) return;
 const c = chatById(current);
 c.msgs.push({u: v}, {a: [['p','이 데모에서는 답변 생성 대신 **Claude Pin 인터랙션**만 체험할 수 있어요. 위 답변에서 마음에 드는 문장을 드래그하거나 길게 눌러 꽂아 보세요.']]});
-$('inp').value = ''; $('send').classList.remove('ok');
+$('inp').value = ''; $('send').classList.remove('ok'); fitInp();
 renderChat(); $('scroll').scrollTop = $('scroll').scrollHeight;
 }
 $('send').onclick = send;
