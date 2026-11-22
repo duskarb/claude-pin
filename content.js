@@ -1,5 +1,5 @@
 /* Claude Pin demo content — a visitor asking Claude about 여남규 */
-try { if (localStorage.getItem('claudepin.cv') !== '9') { localStorage.removeItem('claudepin.v4'); localStorage.setItem('claudepin.cv', '9'); } } catch {}
+try { if (localStorage.getItem('claudepin.cv') !== '10') { localStorage.removeItem('claudepin.v4'); localStorage.setItem('claudepin.cv', '10'); } } catch {}
 window.CP = {
 start: 'case',
 chats: [
@@ -61,7 +61,8 @@ chats: [
 {u:'여남규 대표 프로젝트 알려줘'},
 {tool:'웹 검색함', a:[
 ['ul',['**Sound Gem** · 2026 · KDM+ × LG전자 · 4인 팀: 몸짓으로 다루는 GEN Z 오디오 인터페이스 {{yeonamkyu}}','**Timemap** · 2026 · 대전디자인어워드 Finalist · 3인 팀: 시간으로 다시 그린 대전 지도 {{github}}','**Claude Pin** · 2026 · KAIST ID307 · 개인: 지금 보고 있는 이 프로토타입']],
-['p','그 밖에 팀 Lucy로 참여한 **Exhalo**는 2025 AI Creative Challenge에서 대상을 받았어요. {{yeonamkyu}}']
+['p','그 밖에 팀 Lucy로 참여한 **Exhalo**는 2025 AI Creative Challenge에서 대상을 받았어요. {{yeonamkyu}}'],
+['p','혼자 기획부터 개발까지 맡은 **Soft Coding Club 웹사이트**도 있어요. 자세한 건 「SCC 웹사이트는 어떻게 디자인했어?」 대화에 있어요.']
 ]},
 {u:'Sound Gem에서는 어떤 판단을 했어?'},
 {a:[
@@ -103,6 +104,31 @@ chats: [
 {a:[
 ['p','KAIST 산업디자인학과 학생회장(2024)과 KAIST 공식 홍보대사 카이누리(2022~2024)로 활동했어요.'],
 ['p','여남규는 이런 경험을 **가장 작은 서비스 기획**이라고 불러요. 사람이 다시 돌아오게 만드는 구조를 문제 정의부터 운영까지 끝까지 해 본 일이라서요.']
+]}
+]},
+{ id:'sccweb', ago:'2일 전', title:'SCC 웹사이트는 어떻게 디자인했어?', msgs:[
+{u:'Soft Coding Club 웹사이트는 어떤 사이트야?'},
+{tool:'웹 검색함', a:[
+['p','Soft Coding Club의 공식 사이트예요. 여남규가 2026년에 **기획·디자인·개발을 혼자** 맡아 만들었고, 소개·아카이브·멤버 세 단으로 클럽을 보여 줘요. [softcodingclub.vercel.app](https://softcodingclub.vercel.app/)']
+]},
+{u:'디자인의 핵심은 뭐야?'},
+{a:[
+['p','**클릭으로 찍는 클럽의 인장**이에요. 목록을 펼칠 때마다 누른 바로 그 자리에 빨간 ‘에스씨씨’ 인장이 찍히고, 커서도 검은 인장으로 바뀌어 사이트를 둘러보는 내내 클럽의 이름이 손끝을 따라다녀요.'],
+['p','웹의 가장 기본적인 동작인 클릭을 클럽의 이름을 기억하는 순간으로 바꾼 거예요.']
+]},
+{u:'구체적으로 어떻게 동작해?'},
+{a:[
+['ul',['**Open** 소개·아카이브·멤버 중 하나를 누르면 그 자리에서 목록이 펼쳐져요.','**Stamp** 펼치는 순간 클릭한 위치에 빨간 인장이 남아, 누가 어디를 눌렀는지 흔적이 돼요.','**Cursor** 기본 화살표 대신 검은 인장이 손끝을 따라다녀요.','**Browse** 아카이브 항목에 커서를 올리면 그 작업을 만든 멤버의 이름이 나타나요.']]
+]},
+{u:'모바일에서는?'},
+{a:[
+['p','휴대폰에서는 **손이 커서가 돼요.** 데스크톱의 세 단은 세로로 쌓아 엄지로 넘기고, 탭한 항목만 펼쳐지고 나머지는 접힌 채로 있어요.'],
+['p','커서가 맡던 인장은 손가락으로 밀어 옮기는 로고에 담았어요. 로고가 글을 가리면 밀어 치우고 이어 읽으면 돼요.']
+]},
+{u:'사이트 운영은 누가 해?'},
+{a:[
+['p','멤버들이 직접 해요. Google Sheets에 링크를 올리면 아카이브에 바로 반영되도록 프론트엔드부터 백엔드까지 직접 만들었어요. 그래서 이 사이트는 소개 페이지이면서 **클럽을 굴리는 도구**이기도 해요.'],
+['p','매주 두 시간씩 만든 작업이 아카이브에 26개 쌓였고, 그 작업들로 9월 1일 첫 전시를 열었어요. 수능감독 시뮬레이터, notlinkedin, 122 sites, SCC motion generator, give me love, RGB시계, see-saw 같은 작업들이 올라가 있어요.']
 ]}
 ]},
 { id:'view', ago:'3일 전', title:'요즘 어떤 고민을 하는 디자이너야?', msgs:[
@@ -200,6 +226,7 @@ seed: H => [
 {id:'s6', chat:'people', text:'결과물이 쌓여 보이는 웹사이트를 직접 기획·개발해, 기록이 다시 참여할 이유가 되게 했어요.', t:Date.now()-50*H, memo:'다시 돌아오게 하는 구조'},
 {id:'s7', chat:'view', text:'좋아하는 대상은 달라도 좋아하는 이유가 같은 사람을 이어 주는 연결이요.', t:Date.now()-74*H, memo:''},
 {id:'s8', chat:'who', text:'미디어를 도구가 아니라 재료로 보고, 재료들이 함께 이루는 시스템을 설계해요.', t:Date.now()-80*H, memo:'작업 방식'},
-{id:'s9', chat:'people', text:'진짜 어려운 건 시작이 아니라 유지였어요.', t:Date.now()-96*H, memo:''}
+{id:'s9', chat:'people', text:'진짜 어려운 건 시작이 아니라 유지였어요.', t:Date.now()-96*H, memo:''},
+{id:'s10', chat:'sccweb', text:'웹의 가장 기본적인 동작인 클릭을 클럽의 이름을 기억하는 순간으로 바꾼 거예요.', t:Date.now()-48*H, memo:'SCC 웹의 판단'}
 ]
 };
