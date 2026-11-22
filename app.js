@@ -47,9 +47,9 @@ ${isDrawer ? '' : `<button data-act="plug">${ico('plug')}플러그인</button>`}
 <div class="recents">
 <div class="sec">고정됨 ${ico('down')}</div>
 <button class="pj" data-act="proj">${ico('stack')}여남규 알아보기</button>
-<div class="tree">${CHATS.map(c => `<button data-chat="${c.id}" class="${c.id===current?'on':''}"><span class="tt">${esc(c.title)}</span>${ico('dots')}</button>`).join('')}</div>
+<div class="tree">${CHATS.filter(c => !c.recent).map(c => `<button data-chat="${c.id}" class="${c.id===current?'on':''}"><span class="tt">${esc(c.title)}</span>${ico('dots')}</button>`).join('')}</div>
 <div class="sec">최근 항목 ${ico('down')}</div>
-<div class="rec"><button data-act="other">인턴 지원자 포트폴리오 비교</button><button data-act="other">디자인 면접 질문 정리</button></div>
+<div class="rec">${CHATS.filter(c => c.recent).map(c => `<button data-chat="${c.id}" class="${c.id===current?'on':''}"><span class="tt">${esc(c.title)}</span>${ico('dots')}</button>`).join('')}</div>
 </div>
 <div class="me"><div class="av">G</div><div>Guest <span>· 방문자</span></div>${ico('down')}<div class="sp"></div><button class="ibtn" aria-label="기기">${ico('device')}</button></div>`;
 }
@@ -86,7 +86,8 @@ html += `</div><div class="actions"><span>${ico('copy')}</span><span>${ico('spea
 }
 $('thread').innerHTML = html;
 const x = $('mcoachX'); if (x) x.onclick = () => { mcoachClosed = true; $('mcoach').remove(); };
-document.querySelectorAll('.tree button').forEach(b => b.classList.toggle('on', b.dataset.chat === current));
+document.querySelectorAll('.tree button,.rec button').forEach(b => b.classList.toggle('on', b.dataset.chat === current));
+document.querySelector('.top .title').classList.toggle('solo', !!c.recent);
 }
 let mcoachClosed = false;
 function openChat(id){

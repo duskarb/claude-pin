@@ -58,7 +58,12 @@ svg.i{width:var(--ic-md);height:var(--ic-md);fill:none;stroke:currentColor;strok
 .tree button{display:flex;align-items:center;gap:6px}
 .tree button .tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .tree button svg.i{display:none;width:var(--ic-md);height:var(--ic-md);color:var(--ink)}
-.tree button.on svg.i,.tree button:hover svg.i{display:block}
+.tree button.on svg.i,.tree button:hover svg.i,.rec button.on svg.i,.rec button:hover svg.i{display:block}
+.rec button{display:flex;align-items:center;gap:6px}
+.rec button .tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.rec button svg.i{display:none;width:var(--ic-md);height:var(--ic-md);color:var(--ink)}
+.rec button.on{background:var(--sel)}
+.top .title.solo .crumb,.top .title.solo .slash{display:none}
 .tree button.on{background:var(--sel);font-weight:var(--fw-action)}
 .rec{display:flex;flex-direction:column;gap:1px}
 .recents{flex:1;overflow:auto;display:flex;flex-direction:column;gap:1px;margin:0 -4px;padding:0 4px}
@@ -117,9 +122,10 @@ svg.i{width:var(--ic-md);height:var(--ic-md);fill:none;stroke:currentColor;strok
 ::highlight(pinsel){background:rgba(217,119,87,.22)}
 /* composer */
 .composer{flex:none;padding:0 28px 12px}
-.box{max-width:740px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,.04);padding:14px 14px 14px 22px;display:flex;align-items:center;gap:8px}
+.box{max-width:740px;margin:0 auto;background:#fff;border:1px solid #DDDDDD;border-radius:18px;box-shadow:0 1px 3px rgba(0,0,0,.03);padding:6px 6px 6px 18px;display:flex;align-items:flex-end;gap:8px}
 .box textarea{flex:1;border:0;outline:0;resize:none;height:26px;max-height:180px;font-size:var(--fs-lead);line-height:22px;background:transparent;padding:2px 0;overflow-y:hidden;scrollbar-width:none}
 .box textarea::-webkit-scrollbar{display:none}
+.box textarea{margin-bottom:2px}
 .box textarea::placeholder{color:var(--faint)}
 .crow{max-width:740px;margin:8px auto 0;display:flex;align-items:center;gap:4px;font-size:var(--fs-sm);color:var(--muted)}
 .crow .l,.crow .r{display:flex;align-items:center;gap:2px;flex:1}
@@ -129,7 +135,7 @@ svg.i{width:var(--ic-md);height:var(--ic-md);fill:none;stroke:currentColor;strok
 .ibtn{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;color:var(--ink2)}
 .ibtn:hover{background:var(--hover)}
 .model{font-size:var(--fs-sm);color:var(--ink2);padding:0 8px}
-.send{width:34px;height:34px;border-radius:10px;color:var(--muted);display:grid;place-items:center}
+.send{width:30px;height:30px;border-radius:9px;color:var(--muted);display:grid;place-items:center}
 .send.ok{background:var(--ink);color:#fff}
 .disc{text-align:center;font-size:var(--fs-sm);color:#888;white-space:nowrap}
 .disc b{color:var(--muted);font-weight:var(--fw-title)}
@@ -279,7 +285,7 @@ body{font-size:var(--fs-base)}
 .answer{font-size:var(--fs-lead);line-height:1.75}
 .answer,.msg-u{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .composer{padding:0 12px calc(8px + env(safe-area-inset-bottom))}
-.box{border-radius:22px}
+.box{border-radius:18px}
 .model{display:none}
 .mcoach{display:flex;align-items:center;gap:10px;margin:6px 0 10px;padding:8px 0;font-size:var(--fs-sm);color:var(--ink2)}
 .mcoach b{color:var(--acc-ink)}
