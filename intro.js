@@ -9,7 +9,7 @@ const css = `
 .icard{width:min(500px,100%);background:#fff;border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.28);padding:26px 26px 20px;animation:iRise .5s cubic-bezier(.2,.9,.3,1.1) both}
 @keyframes iRise{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 .icard .ibadge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;color:#B85C3D}
-.icard h2{margin:12px 0 6px;font-family:'DM Sans',Pretendard,sans-serif;font-style:italic;font-weight:900;font-size:28px;letter-spacing:-.035em;color:#1F1F1E}
+.icard h2{margin:12px 0 6px;font-family:'Source Serif 4',Georgia,serif;font-optical-sizing:auto;font-weight:500;font-size:32px;letter-spacing:-.015em;line-height:1.1;color:#191919}
 .icard .isub{margin:0;font-size:15px;line-height:1.6;color:#4A4A47}
 .sw{position:relative;margin:18px 0 14px;border:1px solid #E3E3E1;border-radius:14px;overflow:hidden;background:#fff}
 .stage{position:absolute;left:0;top:0;width:440px;height:226px;transform-origin:0 0;overflow:hidden}
