@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@1,9..40,900&display=swap">
-<link rel="stylesheet" href="/app.css?v=10">
+<link rel="stylesheet" href="/app.css?v=11">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute">
@@ -99,14 +99,12 @@
 <div class="bfoot"><label class="search"><svg class="i"><use href="#i-search"/></svg><input id="bq" placeholder="핀 검색"></label></div>
 </aside>
 <section class="full" id="full">
-<div class="fhead">
-<h2>핀 보드<small id="fcount"></small></h2>
-<div class="sp"></div>
-<label class="search"><svg class="i"><use href="#i-search"/></svg><input id="fq" placeholder="문장·메모 검색"></label>
-<button class="ibtn" id="fClose" title="닫기"><svg class="i"><use href="#i-x"/></svg></button>
-</div>
-<div class="chips" id="chips"></div>
+<button class="ibtn fclose" id="fClose" title="닫기"><svg class="i"><use href="#i-x"/></svg></button>
+<div class="fwrap">
+<div class="fhead"><h2>핀 보드</h2><small id="fcount"></small></div>
+<label class="search fsearch"><svg class="i"><use href="#i-search"/></svg><input id="fq" placeholder="문장이나 메모로 검색" autocomplete="off"></label>
 <div class="grid" id="grid"></div>
+</div>
 </section>
 </main>
 </div>
@@ -127,8 +125,8 @@
 <div class="selchip" id="selchip"><button class="go" id="selGo"><svg class="i"><use href="#i-pin"/></svg>메모 +</button><button id="selCancel">취소</button></div>
 <div class="handle" id="h1"></div><div class="handle" id="h2"></div>
 <div class="toast" id="toast"><span id="toastT"></span><button id="toastB">보기</button></div>
-<script src="/content.js?v=10"></script>
-<script src="/app.js?v=10"></script>
-<script src="/intro.js?v=10"></script>
+<script src="/content.js?v=11"></script>
+<script src="/app.js?v=11"></script>
+<script src="/intro.js?v=11"></script>
 </body>
 </html>

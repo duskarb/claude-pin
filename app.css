@@ -214,19 +214,22 @@ transform:translateX(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);di
 .main.boarded .composer{padding-left:28px}
 }
 /* ---------- full board (organize) ---------- */
-.full{position:absolute;inset:0;z-index:35;background:var(--bg);display:none;flex-direction:column}
-.full.on{display:flex}
-.fhead{flex:none;display:flex;align-items:center;gap:14px;padding:22px 34px 12px}
-.fhead h2{margin:0;font-size:var(--fs-display);font-weight:var(--fw-title);letter-spacing:-.02em}
-.fhead h2 small{font-size:var(--fs-ui);color:var(--muted);font-weight:var(--fw-body);margin-left:8px}
-.fhead .sp{flex:1}
-.fhead .search{width:280px}
-.chips{display:flex;gap:6px;padding:0 34px 14px;flex-wrap:wrap;flex:none}
-.chip{font-weight:var(--fw-action);height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);font-size:var(--fs-sm);color:var(--ink2);background:#fff}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.grid{flex:1;overflow:auto;padding:4px 34px 40px;columns:3 280px;column-gap:14px}
-.grid .card{break-inside:avoid;margin:0 0 14px;display:block}
+.full{position:absolute;inset:0;z-index:35;background:var(--bg);display:none;overflow-y:auto}
+.full.on{display:block}
+.fclose{position:absolute;top:14px;right:18px;z-index:2;width:36px;height:36px}
+.fwrap{max-width:1040px;margin:0 auto;padding:64px 48px 96px}
+.fhead{display:flex;align-items:baseline;gap:12px;margin:0 0 28px}
+.fhead h2{margin:0;font-size:28px;font-weight:var(--fw-title);letter-spacing:-.02em}
+.fhead small{font-size:var(--fs-ui);color:var(--muted)}
+.fsearch{height:52px;border-radius:14px;padding:0 18px;gap:12px;margin:0 0 40px;color:var(--muted);box-shadow:0 1px 2px rgba(0,0,0,.03);transition:border-color .15s,box-shadow .15s}
+.fsearch svg.i{width:var(--ic-lg);height:var(--ic-lg)}
+.fsearch input{font-size:var(--fs-lead)}
+.fsearch input::placeholder{color:var(--faint)}
+.fsearch:focus-within{border-color:#BDBDBD;box-shadow:0 0 0 4px rgba(0,0,0,.04)}
+.grid{columns:3 280px;column-gap:16px}
+.grid .card{break-inside:avoid;margin:0 0 16px;display:block}
 .grid .card .tx{-webkit-line-clamp:8}
+.grid .empty{column-span:all;padding:60px 10px}
 /* toast */
 .toast{font-weight:var(--fw-action);position:fixed;left:50%;bottom:110px;transform:translate(-50%,20px);z-index:90;background:var(--ink);color:#fff;border-radius:12px;padding:10px 12px 10px 16px;font-size:var(--fs-sm);display:flex;gap:14px;align-items:center;opacity:0;pointer-events:none;transition:all .25s}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}

@@ -190,17 +190,14 @@ document.addEventListener('click', e => { if (!e.target.closest('.more,.menu')) 
 /* full board (organize) */
 function renderFull(){
 const list = pins.filter(p => match(p, fq) && (fchat === 'all' || p.chat === fchat));
-const used = [...new Set(pins.map(p => p.chat))];
-$('chips').innerHTML = `<button class="chip ${fchat==='all'?'on':''}" data-c="all">전체 ${pins.length}</button>` +
-used.map(id => `<button class="chip ${fchat===id?'on':''}" data-c="${id}">${esc(chatById(id).title)}</button>`).join('');
-$('grid').innerHTML = list.length ? list.map(p => cardHTML(p)).join('') : '<div class="empty">조건에 맞는 핀이 없어요</div>';
-$('fcount').textContent = pins.length + '개의 문장';
+$('grid').innerHTML = list.length ? list.map(p => cardHTML(p)).join('') : `<div class="empty">${fq ? '찾는 문장이 없어요' : '아직 꽂은 핀이 없어요'}</div>`;
+$('fcount').textContent = fq ? `${pins.length}개 중 ${list.length}개` : `${pins.length}개의 문장`;
 }
-function openFull(){ closeBoard(); $('full').classList.add('on'); renderFull(); document.querySelectorAll('#sPins').forEach(b => b.classList.add('on')); }
+function openFull(){ closeBoard(); $('full').classList.add('on'); renderFull(); setTimeout(() => $('fq').focus({preventScroll:true}), 50); document.querySelectorAll('#sPins').forEach(b => b.classList.add('on')); }
 function closeFull(){ $('full').classList.remove('on'); document.querySelectorAll('#sPins').forEach(b => b.classList.remove('on')); }
 $('fClose').onclick = closeFull;
 $('fq').oninput = e => { fq = e.target.value; renderFull(); };
-$('chips').onclick = e => { const b = e.target.closest('.chip'); if (b){ fchat = b.dataset.c; renderFull(); } };
+addEventListener('keydown', e => { if (e.key === 'Escape' && $('full').classList.contains('on') && !document.getElementById('intro')) closeFull(); });
 function addPin(text, chat, beforeId){
 const p = { id: 'p' + Date.now().toString(36), chat, text, t: Date.now(), memo: '' };
 const at = beforeId === undefined ? 0 : beforeId === null ? pins.length : Math.max(0, pins.findIndex(x => x.id === beforeId));
