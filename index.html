@@ -1,1 +1,127 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>포트폴리오 — Claude Pin</title><meta name="description" content="대화의 한 문장을 맥락과 함께 저장하는 Claude Pin UX 디자인 프로젝트. 여남규의 포트폴리오."><meta name="theme-color" content="#faf9f5"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="portfolio.css"></head><body><a class="skip" href="#main">본문으로 건너뛰기</a><header class="topbar"><div class="shell"><a class="brand" href="index.html">Claude Pin<span>·</span></a><nav aria-label="주 메뉴"><a href="index.html" aria-current="page">포트폴리오</a><a href="prototype.html" >프로토타입</a><a href="components.html" >컴포넌트</a><a class="download" href="downloads/claude-pin-portfolio.pdf" download>PDF ↓</a></nav></div></header><main id="main" class="shell"><section class="hero"><div class="hero-top"><p class="eyebrow">Product design / AI conversation</p><p class="eyebrow">2026 · Personal concept</p></div><h1>Claude Pin</h1><div class="hero-bottom"><h2>대화에서 건진 문장에,<br><mark>돌아가는 길</mark>을 남기다.</h2><div><p class="hero-summary">좋은 답변을 복사하는 데서 끝나지 않도록.<br>문장을 끌어 담고, 정리하고, 그 대화로 돌아가는 경험을 설계했습니다.</p><div class="actions"><a class="button" href="prototype.html">직접 체험하기 <span>↗</span></a><a class="button secondary" href="downloads/claude-pin-portfolio.pdf" download>3페이지 PDF ↓</a></div></div></div><figure class="hero-visual"><img src="assets/flow-place.png" alt="선택한 문장을 오른쪽 핀 보드의 카드 사이로 끌어 놓는 최종 화면" width="1440" height="1024"><figcaption class="visual-label">FINAL EXPERIENCE · 문장 → 핀 → 대화</figcaption></figure><dl class="meta"><div><dt>역할</dt><dd>리서치 · IA · UI 설계 · 프로토타이핑 / 개인 프로젝트</dd></div><div><dt>기간</dt><dd>2026.03–04 · KAIST ID307</dd></div><div><dt>작업 도구</dt><dd>Figma · Claude · HTML / CSS / JS</dd></div></dl></section><section class="section" id="experience"><div class="section-head"><div class="section-num"><b>01</b>FINAL EXPERIENCE</div><div><h2>문장 하나를 끌면,<br>맥락이 따라옵니다.</h2><p>선택부터 재진입까지. 최종안의 여섯 장면으로 핵심 경험을 살펴보세요.</p></div></div><div class="experience"><div class="tabs" role="tablist" aria-label="최종 사용자 흐름" aria-orientation="vertical"><button role="tab" id="tab-select" aria-controls="flow-panel" aria-selected="true" tabindex="0" data-flow="0"><span class="tab-title">01 Select</span><small>문장을 선택하다</small></button><button role="tab" id="tab-drag" aria-controls="flow-panel" aria-selected="false" tabindex="-1" data-flow="1"><span class="tab-title">02 Drag</span><small>문장을 끌어오다</small></button><button role="tab" id="tab-place" aria-controls="flow-panel" aria-selected="false" tabindex="-1" data-flow="2"><span class="tab-title">03 Place</span><small>원하는 자리에 놓다</small></button><button role="tab" id="tab-saved" aria-controls="flow-panel" aria-selected="false" tabindex="-1" data-flow="3"><span class="tab-title">04 Keep</span><small>대화 곁에 보관하다</small></button><button role="tab" id="tab-board" aria-controls="flow-panel" aria-selected="false" tabindex="-1" data-flow="4"><span class="tab-title">05 Organize</span><small>넓게 펼쳐 정리하다</small></button><button role="tab" id="tab-return" aria-controls="flow-panel" aria-selected="false" tabindex="-1" data-flow="5"><span class="tab-title">06 Return</span><small>그 문장으로 돌아가다</small></button></div><div id="flow-panel" role="tabpanel" aria-labelledby="tab-select" tabindex="0"><img id="flow-image" class="result-image" src="assets/flow-select.png" alt="문장을 선택한 최종 화면" width="1440" height="1024"><div class="result-description"><h3 id="flow-title">문장을 선택하다</h3><p id="flow-copy">답변 전체가 아닌, 다시 보고 싶은 한 문장을 선택합니다. 대화의 앞뒤 맥락은 그대로 유지합니다.</p></div><a class="inline-link" href="prototype.html">동작하는 프로토타입 열기 ↗</a></div></div></section><section class="section" id="problem"><div class="section-head"><div class="section-num"><b>02</b>PROBLEM & INSIGHT</div><div><h2>글자와 함께,<br>맥락도 남길 수 없을까?</h2></div></div><div class="two-col"><p class="problem-copy">AI 답변의 일부를 다른 앱에 복사하면, 어떤 질문에서 나온 문장인지 다시 찾기 어렵습니다. 저장한 문장이 원래 대화로 이어지도록 만드는 것이 이 프로젝트의 출발점입니다.</p><div class="flow"><div><small>기존</small><span>복사</span><span>→</span><span>다른 앱</span><span>→</span><span>맥락 유실</span></div><div><small>제안</small><span>핀</span><span>→</span><span>맥락 보존</span><span>→</span><strong>대화 재진입</strong></div></div></div><div class="research"><article><h3>Apple Notes</h3><p>빠르게 담는 캡처</p></article><article><h3>Google Keep</h3><p>작업 곁의 보관함</p></article><article><h3>Readwise</h3><p>읽는 흐름 속 저장</p></article><article><h3>Granola</h3><p>원본으로 돌아가는 연결</p></article><article><h3>Mem</h3><p>저장 이후의 정리 부담 줄이기</p></article></div><p class="note">프로젝트 당시 레퍼런스 분석에서 도출한 설계 원칙입니다. 사용자 인터뷰나 사용성 검증 결과는 아닙니다.</p></section><section class="section" id="process"><div class="section-head"><div class="section-num"><b>03</b>DESIGN EVOLUTION</div><div><h2>탭에서 보드로.<br>메시지에서 문장으로.</h2></div></div><div class="versions"><article class="version"><figure><img src="assets/version-1.png" alt="별도 공간에 모으기 시안" loading="lazy"></figure><p class="version-label">01 / 메모 탭</p><h3>별도 공간에 모으기</h3><p>문장을 저장하고 별도 탭의 그리드에서 확인하는 방식.</p><p class="decision">대화를 떠나야 한다는 단절이 남았습니다.</p></article><article class="version"><figure><img src="assets/version-2.png" alt="대화 옆으로 가져오기 시안" loading="lazy"></figure><p class="version-label">02 / 앵커와 패널</p><h3>대화 옆으로 가져오기</h3><p>메시지의 앵커 버튼과 사이드 패널로 저장과 확인을 한 화면에 배치했습니다.</p><p class="decision">저장 범위를 메시지 전체에서 문장으로 좁혔습니다.</p></article><article class="version"><figure><img src="assets/version-3.png" alt="선택한 문장을 끌어 담기 시안" loading="lazy"></figure><p class="version-label">03 / Final</p><h3>선택한 문장을 끌어 담기</h3><p>문장 선택, 드래그 카드, 삽입선, 핀 카드, 원문 링크를 하나의 흐름으로 연결했습니다.</p><p class="decision">담는 순간 위치와 출처가 함께 결정됩니다.</p></article></div><div class="principle"><h3>기존 구조 위에 한 겹만.</h3><p>사이드바, 대화, 입력창은 익숙한 구조를 유지합니다. 그 위에 문장 단위의 저장과 핀 보드를 더해, 대화를 읽는 일과 다시 찾는 일이 이어지게 했습니다.</p></div></section><section class="section" id="system"><div class="section-head"><div class="section-num"><b>04</b>COMPONENT SYSTEM</div><div><h2>익숙한 기반 위에,<br>핀을 위한 작은 확장.</h2><p>원본의 Sidebar, Claude response, Chat input과 아이콘을 활용하고, 핀 카드와 드래그 상태를 같은 시각 언어로 연결했습니다.</p></div></div><div class="component-grid"><figure class="component"><div class="component-stage"><img src="assets/pin-card-a.png" alt="원본 핀 카드: 문장, 출처, 댓글" width="316" height="177"></div><figcaption><b>Pin card</b>문장 · 원문 링크 · 댓글을 하나로</figcaption></figure><figure class="component"><div class="component-stage"><img src="assets/pin-card-b.png" alt="원본 핀 카드의 콘텐츠 변형" width="316" height="177"></div><figcaption><b>Content variant</b>같은 구조로 다른 생각을 담기</figcaption></figure><figure class="component"><div class="component-stage"><div class="asset-icons"><img src="assets/icons/sidebar.svg" alt="Sidebar" width="20" height="20"><img src="assets/icons/chat-add.svg" alt="Chat Add" width="20" height="20"><img src="assets/icons/chats.svg" alt="Chats" width="20" height="20"><img src="assets/icons/expand.svg" alt="Expand" width="20" height="20"><img src="assets/icons/search-24.svg" alt="Search" width="24" height="24"><img src="assets/icons/spark.svg" alt="Claude Spark" width="28" height="28"></div></div><figcaption><b>Original assets</b>원본 탐색 · 확장 · 검색 · 응답 아이콘</figcaption></figure></div><a class="inline-link" href="components.html">컴포넌트와 상태 정의 보기 ↗</a></section><section class="section"><div class="section-head"><div class="section-num"><b>05</b>REFLECTION</div><div><h2>설계한 경험과,<br>아직 확인할 질문.</h2></div></div><div class="next-grid"><div><h3>구현한 범위</h3><p>문장 선택과 드래그 저장, 핀 보드 확장, 검색, 댓글, 원문 복귀를 동작하는 프로토타입으로 만들었습니다. 설계 방향과 인터랙션을 정하고, AI를 활용해 Figma 시안을 코드로 옮겼습니다.</p></div><div><h3>다음 검증</h3><ul><li>설명 없이 드래그 저장을 발견할 수 있는가?</li><li>핀에서 원문으로 돌아가는 경로가 명확한가?</li><li>모바일의 선택 후 핀 버튼이 충분히 쉬운가?</li><li>핀 수정과 이미지 저장은 언제 필요한가?</li></ul></div></div><p class="note">사용자 테스트 전 단계의 컨셉입니다. 실제 AI 모델 연동과 협업·공유 기능은 포함하지 않습니다.</p></section><section class="end-cta"><h2>읽은 생각을, 이어갈 수 있게.</h2><div class="actions"><a class="button" href="prototype.html">프로토타입 체험 ↗</a><a class="button secondary" href="downloads/claude-pin-portfolio.pdf" download>PDF 다운로드 ↓</a></div></section></main><script src="flow-data.js"></script><script src="portfolio.js"></script><footer class="shell"><span>여남규 · Namkyu Yeo<br>KAIST ID307 · 2026</span><span>학생 개인 컨셉 프로젝트 · Anthropic과 무관<br><a href="https://www.figma.com/design/IIHWlB9DJGK7p6CIbemmWu/for-Claude?node-id=4133-1061" target="_blank" rel="noopener">Figma 원본 ↗</a> · <a href="https://github.com/duskarb/claude-pin">GitHub ↗</a></span></footer></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>Claude Pin — Concept Prototype</title>
+<meta name="description" content="Claude 답변에서 필요한 문장만 꽂아 두고, 원래 대화로 돌아가는 Claude Pin 컨셉 프로토타입">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@1,9..40,900&display=swap">
+<link rel="stylesheet" href="/app.css?v=8">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+<!-- Icon set v2 · 24 grid · keylines: square 16 / circle 17 · corner r2.5 · round caps & joins -->
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 3.5 3.5"/></symbol>
+<symbol id="i-art" viewBox="0 0 24 24"><path d="M10.5 6.2 11 5a2.5 2.5 0 0 1 3.2-1.4l3.6 1.3a2.5 2.5 0 0 1 1.5 3.2l-2.6 7.2a2.5 2.5 0 0 1-1.7 1.6"/><rect x="4.5" y="7.5" width="9" height="12.5" rx="2.5" transform="rotate(-5 9 13.75)"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M8.25 3.5h7.5M9.5 3.5v5.25l-3.2 3.6c-.6.65-.15 1.65.75 1.65h9.9c.9 0 1.35-1 .75-1.65l-3.2-3.6V3.5M12 14v6.5"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="m9.5 6.5 5.5 5.5-5.5 5.5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10M10 19.5H4.5V14M19.5 4.5 13.5 10.5M4.5 19.5l6-6"/></symbol>
+<symbol id="i-dots" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V6a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 6v1M6.5 7l.8 10.7A2.5 2.5 0 0 0 9.8 20h4.4a2.5 2.5 0 0 0 2.5-2.3L17.5 7"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M4.5 19.5h4l9.7-9.7a2.5 2.5 0 0 0 0-3.5l-.5-.5a2.5 2.5 0 0 0-3.5 0L4.5 15.5z"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4.5 7.5h15M4.5 12h15M4.5 16.5h10"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M6 11.5a6 6 0 0 0 12 0M12 17.5v3"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 4.5H7A2.5 2.5 0 0 0 4.5 7v8.5"/></symbol>
+<symbol id="i-thumb" viewBox="0 0 24 24"><path d="M7.5 10.5v9M7.5 19.5h8.3a2.5 2.5 0 0 0 2.4-2l1.1-5.2a2 2 0 0 0-2-2.3h-4.1l.6-3.1a1.8 1.8 0 0 0-3.3-1.3L7.5 10.5H6A1.5 1.5 0 0 0 4.5 12v6A1.5 1.5 0 0 0 6 19.5z"/></symbol>
+<symbol id="i-thumbd" viewBox="0 0 24 24"><g transform="matrix(1 0 0 -1 0 24)"><path d="M7.5 10.5v9M7.5 19.5h8.3a2.5 2.5 0 0 0 2.4-2l1.1-5.2a2 2 0 0 0-2-2.3h-4.1l.6-3.1a1.8 1.8 0 0 0-3.3-1.3L7.5 10.5H6A1.5 1.5 0 0 0 4.5 12v6A1.5 1.5 0 0 0 6 19.5z"/></g></symbol>
+<symbol id="i-retry" viewBox="0 0 24 24"><path d="M5 12a7 7 0 1 0 2.1-5M5 4.5V8h3.5"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><path d="M12 14.5V4M7.5 8.5 12 4l4.5 4.5M5 13v4.5A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5V13"/></symbol>
+<symbol id="i-side" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M9 5v14"/></symbol>
+<symbol id="i-enter" viewBox="0 0 24 24"><path d="M19 5.5V11a2.5 2.5 0 0 1-2.5 2.5H6M10 9.5l-4 4 4 4"/></symbol>
+<symbol id="i-wave" viewBox="0 0 24 24"><path d="M4.5 10.5v3M8 8v8M11.5 5v14M15 8v8M18.5 10.5v3"/></symbol>
+<symbol id="i-reply" viewBox="0 0 24 24"><path d="M9.5 6.5 4 12l5.5 5.5M4 12h9.5a6 6 0 0 1 6 6"/></symbol>
+<symbol id="i-speak" viewBox="0 0 24 24"><path d="M4.5 10.5A1.5 1.5 0 0 1 6 9h2l3.4-2.8a.8.8 0 0 1 1.3.6v10.4a.8.8 0 0 1-1.3.6L8 15H6a1.5 1.5 0 0 1-1.5-1.5zM15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10"/></symbol>
+<symbol id="i-stack" viewBox="0 0 24 24"><path d="M9 4h6M6.5 7h11M4.5 12.5A2.5 2.5 0 0 1 7 10h10a2.5 2.5 0 0 1 2.5 2.5v5A2.5 2.5 0 0 1 17 20H7a2.5 2.5 0 0 1-2.5-2.5z"/></symbol>
+<symbol id="i-sched" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><path d="M10 3.5v3.5M14 3.5v3.5M7.5 7h9v3a4.5 4.5 0 0 1-9 0zM12 14.5v6"/></g></symbol>
+<symbol id="i-archive" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="5" rx="2.5"/><path d="M5.5 9.5v8A2.5 2.5 0 0 0 8 20h8a2.5 2.5 0 0 0 2.5-2.5v-8M10 13.5h4"/></symbol>
+</svg>
+<div class="app" id="app">
+<aside class="side" id="side"></aside>
+<main class="main" id="main">
+<header class="top">
+<div class="title"><span class="crumb">여남규 알아보기</span><span class="slash">/</span><span id="ttl"></span><svg class="i"><use href="#i-down"/></svg></div>
+<div class="sp"></div>
+<button class="tbtn"><svg class="i"><use href="#i-share"/></svg>공유</button>
+<button class="tbtn pinbtn" id="pinToggle" title="핀 보드 열기"><svg class="i"><use href="#i-pin"/></svg>핀 보드<span class="cnt" id="pinCnt"></span></button>
+</header>
+<header class="mtop">
+<button class="ibtn" id="mMenu" aria-label="메뉴"><svg class="i"><use href="#i-menu"/></svg></button>
+<div class="title" id="mttl"></div>
+<button class="ibtn plus" aria-label="새 채팅"><svg class="i"><use href="#i-plus"/></svg></button>
+</header>
+<div class="scroll" id="scroll">
+<div class="coach" id="coach">
+<span class="lbl">TRY IT</span>
+<ol>
+<li id="st1"><i>1</i>문장 드래그</li>
+<li id="st2"><i>2</i>오른쪽 보드로 끌거나 「핀」</li>
+<li id="st3"><i>3</i>핀의 링크로 원래 대화로</li>
+</ol>
+<button class="again" id="coachAgain">사용법 다시 보기</button>
+<button class="x" id="coachX" aria-label="닫기"><svg class="i"><use href="#i-x"/></svg></button>
+</div>
+<div class="thread" id="thread"></div>
+</div>
+<div class="composer">
+<div class="box">
+<textarea id="inp" placeholder="답글" rows="1"></textarea>
+<button class="send" id="send" aria-label="보내기"><svg class="i"><use href="#i-enter"/></svg></button>
+</div>
+<div class="crow">
+<div class="l"><button class="ibtn" aria-label="첨부"><svg class="i"><use href="#i-plus"/></svg></button><button class="ibtn" aria-label="음성"><svg class="i"><use href="#i-mic"/></svg></button><button class="ibtn" aria-label="음성 모드"><svg class="i"><use href="#i-wave"/></svg></button></div>
+<div class="disc"><b>Concept prototype</b> · Anthropic과 무관한 개인 UX 프로젝트입니다</div>
+<div class="r"><span class="model">Opus 5.5 <i>높음</i></span><span>자동</span></div>
+</div>
+</div>
+<aside class="board" id="board">
+<div class="bhead">
+<h3>핀 보드 <small id="bcount"></small></h3>
+<button class="ibtn" id="bExpand" title="크게 보기"><svg class="i"><use href="#i-expand"/></svg></button>
+<button class="ibtn" id="bClose" title="닫기"><svg class="i"><use href="#i-x"/></svg></button>
+</div>
+<div class="blist" id="blist"></div>
+<div class="bfoot"><label class="search"><svg class="i"><use href="#i-search"/></svg><input id="bq" placeholder="핀 검색"></label></div>
+</aside>
+<section class="full" id="full">
+<div class="fhead">
+<h2>핀 보드<small id="fcount"></small></h2>
+<div class="sp"></div>
+<label class="search"><svg class="i"><use href="#i-search"/></svg><input id="fq" placeholder="문장·메모 검색"></label>
+<button class="ibtn" id="fClose" title="닫기"><svg class="i"><use href="#i-x"/></svg></button>
+</div>
+<div class="chips" id="chips"></div>
+<div class="grid" id="grid"></div>
+</section>
+</main>
+</div>
+<!-- desktop selection hint -->
+<div class="hint" id="hint"><button id="hintReply">답글<svg class="i"><use href="#i-reply"/></svg></button><span class="sep"></span><button id="hintPin" class="pinb">핀<svg class="i"><use href="#i-pin"/></svg></button></div>
+<!-- mobile -->
+<div class="scrim" id="scrim"></div>
+<nav class="drawer" id="drawer"></nav>
+<section class="mmemo" id="mmemo">
+<div class="mhead">
+<button class="ibtn" id="mmBack" aria-label="메뉴"><svg class="i"><use href="#i-menu"/></svg></button>
+<h3>메모</h3>
+<button class="ibtn" aria-label="보관함"><svg class="i"><use href="#i-archive"/></svg></button>
+</div>
+<div class="mlist" id="mlist"></div>
+<div class="mfoot"><label class="search"><svg class="i"><use href="#i-search"/></svg><input id="mq" placeholder="검색"></label><button class="ibtn" id="mmNew" aria-label="채팅으로"><svg class="i"><use href="#i-plus"/></svg></button></div>
+</section>
+<div class="selchip" id="selchip"><button class="go" id="selGo"><svg class="i"><use href="#i-pin"/></svg>메모 +</button><button id="selCancel">취소</button></div>
+<div class="handle" id="h1"></div><div class="handle" id="h2"></div>
+<div class="toast" id="toast"><span id="toastT"></span><button id="toastB">보기</button></div>
+<script src="/content.js?v=8"></script>
+<script src="/app.js?v=8"></script>
+<script src="/intro.js?v=8"></script>
+</body>
+</html>

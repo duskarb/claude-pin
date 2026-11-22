@@ -1,504 +1,487 @@
-/* Claude Pin: case study page + working prototype. No dependencies. */
 (() => {
-  'use strict';
-
-  // ───────────── Data ─────────────
-  const SESSIONS = [
-    {
-      id: 'plotter', title: '펜 플로터 시계',
-      messages: [
-        { role: 'user', paras: ['펜 플로터 시계에 대해 설명해줘'] },
-        { role: 'ai', paras: [
-          '펜 플로터 시계는 남규님이 현재 진행하고 있는 프로젝트예요. 펜 플로터는 컴퓨터가 제어하는 드로잉 기계예요. 모터로 펜을 움직여 벡터 이미지를 종이에 직접 그립니다.',
-          '남규님의 아이디어 중에서는 속도 자체가 하나의 시간 감각이 될 수 있다는 점이 인상적이에요. 펜의 속도를 제어하면 시각적 리듬을 만들 수 있습니다.',
-          '이런 물리적 제약이 오히려 독특한 미적 감각을 만들어냅니다. 디지털 방식으로는 구현하기 어려운 우연성과 물성이 펜 플로터의 매력이에요.',
-        ] },
-        { role: 'user', paras: ['시간을 그리는 방식을 몇 가지 더 제안해줘'] },
-        { role: 'ai', paras: [
-          '하루에 나선을 한 번 그리는 대신, 매 시간마다 새로운 나선을 시작하는 방법이 있어요. 24개의 나선이 겹쳐지면서 모아레 패턴이 생기고, 종이 위에 시간의 층위가 보입니다.',
-          '선을 긋는 속도를 시각에 따라 바꾸는 방법도 있습니다. 느리게 그은 선은 잉크가 번져 굵어지고, 빠르게 그은 선은 가늘게 남아요. 하루의 밀도가 선의 굵기로 기록됩니다.',
-        ] },
-      ],
-    },
-    {
-      id: 'brutal', title: '브루탈리즘 타이포그래피',
-      messages: [
-        { role: 'user', paras: ['브루탈리즘 디자인의 핵심 원칙이 뭐야? 특히 타이포그래피 관점에서.'] },
-        { role: 'ai', paras: [
-          '브루탈리즘 타이포그래피는 기능이 형태를 결정한다는 전제를 극단까지 밀어붙입니다. 장식을 제거하면 남는 건 구조뿐이고, 그 구조가 그대로 미학이 된다는 논리예요.',
-          '첫째는 위계의 노출입니다. 어떤 텍스트가 중요한지 숨기지 않고 크기, 굵기, 위치로 그대로 드러냅니다. 독자가 읽기 전에 이미 구조를 파악할 수 있어야 해요.',
-          '둘째는 여백의 거부입니다. 기존 타이포그래피가 여백으로 숨을 주었다면, 브루탈리즘은 밀도 자체가 의도입니다. 텍스트가 화면을 채우는 것을 두려워하지 않아요.',
-          '셋째이자 가장 중요한 건 폰트의 솔직함입니다. 아무 주장도 하지 않는 서체가 역설적으로 가장 강한 존재감을 가집니다. 폰트가 투명해질수록 콘텐츠의 날것이 드러나요.',
-        ] },
-      ],
-    },
-    {
-      id: 'role', title: 'AI 시대에서 디자이너의 역할',
-      messages: [
-        { role: 'user', paras: ['AI가 화면을 만들어 주는 시대에 디자이너는 무엇을 해야 할까?'] },
-        { role: 'ai', paras: [
-          '만드는 일의 비용이 내려가면, 무엇을 만들지 정하는 일의 값이 올라갑니다. 화면을 그리는 시간보다 문제를 고르는 시간이 더 중요해져요.',
-          '그래서 디자이너의 일은 답을 내는 쪽에서 질문을 다듬는 쪽으로 옮겨 갑니다. 문제를 잘 발견하는 사람이 좋은 결과물을 얻습니다.',
-          '또 하나는 판단입니다. AI는 그럴듯한 시안을 여러 개 내놓지만, 그중 어느 것이 이 사용자에게 맞는지는 사람이 골라야 합니다.',
-        ] },
-      ],
-    },
-  ];
-
-  const SEEDS = [
-    { session: 'plotter', m: 1, p: 1, text: '속도 자체가 하나의 시간 감각이 될 수 있다는 점이 인상적이에요. 펜의 속도를 제어하면 시각적 리듬을 만들 수 있습니다.', ago: 7 * 60e3, comments: ['속도에 따른 소리 변화 활용'] },
-    { session: 'brutal', m: 1, p: 3, text: '폰트가 투명해질수록 콘텐츠의 날것이 드러나요.', ago: 26 * 3600e3, comments: ['포트폴리오 본문 서체 고를 때 참고'] },
-    { session: 'brutal', m: 1, p: 2, text: '브루탈리즘은 밀도 자체가 의도입니다.', ago: 26 * 3600e3 + 9e4, comments: [] },
-    { session: 'role', m: 1, p: 1, text: '문제를 잘 발견하는 사람이 좋은 결과물을 얻습니다.', ago: 3 * 3600e3, comments: [] },
-  ];
-
-  const REPLIES = [
-    [
-      '지금은 예시 응답만 보여 주는 프로토타입이라 실제 모델이 답하고 있지는 않아요. 그래도 이 답변의 문장은 위의 답변과 똑같이 핀할 수 있습니다.',
-      '문장을 선택해 오른쪽으로 끌어 보세요. 새로 만든 핀에도 이 대화로 돌아오는 링크가 붙습니다.',
-    ],
-    [
-      '이 자리에는 원래 모델의 답변이 이어집니다. 프로토타입에서는 대화가 길어져도 핀이 제자리를 찾아가는지를 확인할 수 있어요.',
-      '핀 보드에서 세션 링크를 누르면, 대화가 아무리 길어도 핀한 문장이 화면 가운데에 오도록 이동합니다.',
-    ],
-  ];
-
-  // ───────────── State + storage ─────────────
-  const KEY = 'claude-pin/v1';
-  const state = { session: 'plotter', pins: [], extra: {}, panel: 'closed', query: '', sort: 'new', replyIdx: 0 };
-  let pending = null;      // selection being dragged
-  let autoClose = false;   // panel opened by a drag closes when the cursor returns to the chat
-  let closeTimer = 0;
-
-  const $ = (id) => document.getElementById(id);
-  const app = $('app'), chatScroll = $('chatScroll'), cards = $('cards'), panel = $('panel');
-  const tray = $('tray'), pop = $('pop'), chip = $('dragChip'), live = $('live');
-
-  function load() {
-    try {
-      const raw = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (raw && Array.isArray(raw.pins)) { state.pins = raw.pins; state.extra = raw.extra || {}; return; }
-    } catch (_) { /* storage unavailable: run in memory */ }
-    seed();
-  }
-  function save() {
-    try { localStorage.setItem(KEY, JSON.stringify({ pins: state.pins, extra: state.extra })); } catch (_) {}
-  }
-  function seed() {
-    const now = Date.now();
-    state.extra = {};
-    state.pins = SEEDS.map((s, i) => {
-      const sess = SESSIONS.find((x) => x.id === s.session);
-      const start = sess.messages[s.m].paras[s.p].indexOf(s.text);
-      return {
-        id: 'seed' + i, key: `${s.session}:${s.m}:${s.p}`, start, end: start + s.text.length, text: s.text,
-        src: { type: 'chat', session: s.session, label: sess.title }, t: now - s.ago,
-        comments: s.comments.map((c) => ({ text: c, t: now - s.ago + 6e4 })),
-      };
-    });
-  }
-
-  const messagesOf = (id) => SESSIONS.find((s) => s.id === id).messages.concat(state.extra[id] || []);
-  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const cut = (s, n) => (s.length > n ? s.slice(0, n) + '…' : s);
-  function rel(t) {
-    const d = Date.now() - t;
-    if (d < 6e4) return '방금';
-    if (d < 36e5) return Math.floor(d / 6e4) + '분 전';
-    if (d < 864e5) return Math.floor(d / 36e5) + '시간 전';
-    return Math.floor(d / 864e5) + '일 전';
-  }
-  const say = (msg) => { live.textContent = ''; requestAnimationFrame(() => { live.textContent = msg; }); };
-  const stepDone = (name) => document.querySelector(`.guide [data-step="${name}"]`)?.classList.add('done');
-
-  // ───────────── Pinnable text: render marks ─────────────
-  function renderPinnable(el) {
-    if (el._text == null) el._text = el.textContent;
-    const text = el._text;
-    const ranges = state.pins.filter((p) => p.key === el.dataset.key).sort((a, b) => a.start - b.start);
-    let html = '', pos = 0;
-    for (const p of ranges) {
-      const s = Math.max(p.start, pos), e = Math.min(p.end, text.length);
-      if (e <= s) continue;
-      html += esc(text.slice(pos, s)) + `<mark class="pin-mark" data-pin="${p.id}" tabindex="0" role="button" aria-label="핀한 문장, 보드에서 보기">${esc(text.slice(s, e))}</mark>`;
-      pos = e;
-    }
-    el.innerHTML = html + esc(text.slice(pos));
-  }
-  const renderAllPinnable = () => document.querySelectorAll('[data-pinnable]').forEach(renderPinnable);
-
-  // ───────────── Chat ─────────────
-  function renderChat() {
-    const sess = SESSIONS.find((s) => s.id === state.session);
-    $('chatTitle').textContent = sess.title;
-    const wrap = document.createElement('div');
-    wrap.className = 'msgs';
-    messagesOf(state.session).forEach((m, mi) => {
-      const box = document.createElement('div');
-      box.className = 'msg ' + m.role;
-      m.paras.forEach((t, pi) => {
-        const p = document.createElement('p');
-        p.textContent = t;
-        if (m.role === 'ai') {
-          p.dataset.pinnable = '';
-          p.dataset.key = `${state.session}:${mi}:${pi}`;
-          p.dataset.session = state.session;
-          renderPinnable(p);
-        }
-        box.appendChild(p);
-      });
-      if (m.role === 'ai') {
-        const act = document.createElement('div');
-        act.className = 'msg-actions'; act.setAttribute('aria-hidden', 'true');
-        act.innerHTML = ['thumbsup','thumbsdown','copy','arrowclockwise'].map(name => `<img src="assets/icons/${name}.svg" alt="" width="14" height="14">`).join('');
-        box.appendChild(act);
-        const spark = document.createElement("img"); spark.src="assets/icons/spark.svg"; spark.width=28; spark.height=28; spark.alt=""; spark.className="spark"; box.appendChild(spark);
-      }
-      wrap.appendChild(box);
-    });
-    chatScroll.replaceChildren(wrap);
-    renderSessions();
-  }
-  function renderSessions() {
-    const list = $('sessionList');
-    list.replaceChildren(...SESSIONS.map((s) => {
-      const b = document.createElement('button');
-      b.textContent = s.title;
-      if (s.id === state.session) b.setAttribute('aria-current', 'true');
-      b.onclick = () => { setSession(s.id); toggleSessions(false); };
-      return b;
-    }));
-  }
-  function setSession(id) {
-    if (state.session === id) return;
-    state.session = id;
-    renderChat();
-    chatScroll.scrollTop = 0;
-  }
-  function toggleSessions(open) {
-    const list = $('sessionList');
-    const next = open ?? list.hidden;
-    list.hidden = !next;
-    $('btnSessions').setAttribute('aria-expanded', String(next));
-  }
-
-  // Composer: scripted replies, streamed
-  const input = $('input');
-  let typing = false;
-  input.addEventListener('input', () => { input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px'; });
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('composer').requestSubmit(); }
-  });
-  $('composer').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text || typing) return;
-    const id = state.session;
-    (state.extra[id] ||= []).push({ role: 'user', paras: [text] });
-    input.value = ''; input.style.height = 'auto';
-    renderChat();
-    streamReply(id, REPLIES[state.replyIdx++ % REPLIES.length]);
-  });
-  function streamReply(id, paras) {
-    typing = true;
-    const box = document.createElement('div');
-    box.className = 'msg ai typing';
-    chatScroll.querySelector('.msgs').appendChild(box);
-    let pi = 0, ci = 0, p = null;
-    const tick = () => {
-      if (state.session !== id) return finish();
-      if (!p) { p = document.createElement('p'); box.appendChild(p); }
-      ci += 3;
-      p.textContent = paras[pi].slice(0, ci);
-      chatScroll.scrollTop = chatScroll.scrollHeight;
-      if (ci >= paras[pi].length) { pi++; ci = 0; p = null; if (pi >= paras.length) return finish(); }
-      setTimeout(tick, 18);
-    };
-    const finish = () => {
-      typing = false;
-      state.extra[id].push({ role: 'ai', paras });
-      save();
-      if (state.session === id) { renderChat(); chatScroll.scrollTop = chatScroll.scrollHeight; }
-    };
-    setTimeout(tick, 350);
-  }
-
-  // ───────────── Selection → pin ─────────────
-  const pinnableOf = (node) => (node?.nodeType === 1 ? node : node?.parentElement)?.closest('[data-pinnable]') || null;
-
-  function readSelection() {
-    const sel = window.getSelection();
-    if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
-    const r = sel.getRangeAt(0);
-    const a = pinnableOf(r.startContainer), b = pinnableOf(r.endContainer);
-    const el = a || b;
-    if (!el) return null;
-    const rr = r.cloneRange();
-    if (a !== el) rr.setStart(el, 0);
-    if (b !== el) rr.setEnd(el, el.childNodes.length);
-    const pre = document.createRange();
-    pre.selectNodeContents(el);
-    pre.setEnd(rr.startContainer, rr.startOffset);
-    let text = rr.toString();
-    const start = pre.toString().length + (text.length - text.trimStart().length);
-    text = text.trim();
-    if (text.length < 2) return null;
-    const inChat = !!el.dataset.session;
-    const src = inChat
-      ? { type: 'chat', session: el.dataset.session, label: SESSIONS.find((s) => s.id === el.dataset.session).title }
-      : { type: 'page', section: el.closest('section, header')?.id || 'top', label: '케이스 스터디, ' + (el.dataset.label || '본문') };
-    return { el, key: el.dataset.key, start, end: start + text.length, text, src, rect: rr.getBoundingClientRect() };
-  }
-
-  function commit(s, at) {
-    if (!s) return null;
-    const dup = state.pins.find((p) => p.key === s.key && p.start < s.end && s.start < p.end);
-    if (dup) { focusCard(dup.id); say('이미 핀한 문장입니다'); return dup; }
-    const pin = { id: 'p' + Date.now().toString(36), key: s.key, start: s.start, end: s.end, text: s.text, src: s.src, t: Date.now(), comments: [] };
-    state.pins.splice(at ?? 0, 0, pin);
-    save();
-    window.getSelection()?.removeAllRanges();
-    hidePop();
-    renderPinnable(s.el);
-    renderCards(pin.id);
-    tray.classList.remove('bump'); void tray.offsetWidth; tray.classList.add('bump');
-    stepDone('capture');
-    say('핀했습니다: ' + cut(pin.text, 30));
-    return pin;
-  }
-
-  // Popover button (click path: touch, keyboard, or anyone who would rather not drag)
-  let popTimer = 0;
-  function hidePop() { pop.hidden = true; }
-  const schedulePop = () => {
-    clearTimeout(popTimer);
-    popTimer = setTimeout(() => {
-      const s = pending ? null : readSelection();
-      if (!s) return hidePop();
-      pop.style.left = Math.min(window.innerWidth - 50, Math.max(50, s.rect.left + s.rect.width / 2)) + 'px';
-      pop.style.top = Math.max(44, s.rect.top - 8) + 'px';
-      pop.hidden = false;
-    }, 140);
-  };
-  document.addEventListener('selectionchange', schedulePop);
-  window.addEventListener('scroll', () => { hidePop(); schedulePop(); }, { passive: true, capture: true });
-  pop.addEventListener('mousedown', (e) => e.preventDefault());
-  pop.addEventListener('click', () => {
-    const s = readSelection();
-    const pin = commit(s);
-    if (pin && s.src.type === 'chat' && state.panel === 'closed') { setPanel('side'); autoClose = true; }
-  });
-
-  // Native drag of the selected text
-  document.addEventListener('dragstart', (e) => {
-    const s = readSelection();
-    if (!s) return;
-    pending = s;
-    hidePop();
-    e.dataTransfer.effectAllowed = 'copy';
-    e.dataTransfer.setData('text/plain', s.text);
-    chip.textContent = cut(s.text, 22);
-    try { e.dataTransfer.setDragImage(chip, 18, 20); } catch (_) {}
-    if (s.src.type === 'chat') {
-      if (state.panel === 'closed') { setPanel('side'); autoClose = true; }
-    } else {
-      tray.classList.add('armed');
-      $('trayText').textContent = '여기에 놓아 핀하기';
-    }
-  });
-  document.addEventListener('dragend', () => {
-    pending = null;
-    insertLine.remove();
-    tray.classList.remove('armed', 'over');
-    updateCounts();
-  });
-  function dropTarget(el, overEl) {
-    el.addEventListener('dragover', (e) => { if (!pending) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; overEl.classList.add('over'); });
-    el.addEventListener('dragleave', (e) => { if (!el.contains(e.relatedTarget)) overEl.classList.remove('over'); });
-    el.addEventListener('drop', (e) => { if (!pending) return; e.preventDefault(); commit(pending); });
-  }
-  // Insertion line: the pin lands between the cards where it is dropped
-  const insertLine = document.createElement('div');
-  insertLine.className = 'insert';
-  let insertAt = 0;
-  panel.addEventListener('dragover', (e) => {
-    if (!pending) return;
-    e.preventDefault(); e.dataTransfer.dropEffect = 'copy';
-    const els = [...cards.querySelectorAll('.card')];
-    let i = els.findIndex((c) => { const r = c.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
-    if (i < 0) i = els.length;
-    insertAt = i;
-    const ref = els[i] || null;
-    if (insertLine.parentNode !== cards || insertLine.nextElementSibling !== ref) cards.insertBefore(insertLine, ref);
-  });
-  panel.addEventListener('dragleave', (e) => { if (!panel.contains(e.relatedTarget)) insertLine.remove(); });
-  panel.addEventListener('drop', (e) => { if (!pending) return; e.preventDefault(); insertLine.remove(); commit(pending, insertAt); });
-  dropTarget(tray, tray);
-
-  // The board steps back when the cursor returns to the conversation
-  $('chat').addEventListener('mouseenter', () => {
-    if (!autoClose || pending || state.panel !== 'side') return;
-    clearTimeout(closeTimer);
-    closeTimer = setTimeout(() => { if (autoClose && state.panel === 'side') setPanel('closed'); }, 420);
-  });
-  panel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-
-  // ───────────── Board ─────────────
-  function setPanel(mode) {
-    state.panel = mode;
-    app.dataset.panel = mode;
-    autoClose = false;
-    $('btnPanel').setAttribute('aria-expanded', String(mode !== 'closed'));
-    const full = mode === 'full';
-    $('btnExpand').title = full ? '보드 줄이기' : '보드 넓히기';
-    $('btnExpand').setAttribute('aria-label', $('btnExpand').title);
-    if (!full && state.query) { state.query = ''; $('search').value = ''; }
-    renderCards();
-  }
-
-  function renderCards(freshId) {
-    const q = state.query.trim().toLowerCase();
-    let list = state.pins.filter((p) => !q || [p.text, p.src.label, ...p.comments.map((c) => c.text)].join(' ').toLowerCase().includes(q));
-    const frag = document.createDocumentFragment();
-    if (!list.length) {
-      const e = document.createElement('p');
-      e.className = 'empty';
-      e.textContent = q ? `"${state.query}"에 맞는 핀이 없습니다. 다른 낱말로 찾아보세요.` : '아직 핀이 없습니다. 답변에서 문장을 선택해 여기로 끌어 오세요.';
-      frag.appendChild(e);
-    } else if (state.sort === 'session' && state.panel === 'full') {
-      const groups = new Map();
-      list.forEach((p) => { if (!groups.has(p.src.label)) groups.set(p.src.label, []); groups.get(p.src.label).push(p); });
-      groups.forEach((items, label) => {
-        const h = document.createElement('p'); h.className = 'group'; h.textContent = `${label} (${items.length})`;
-        frag.appendChild(h);
-        items.forEach((p) => frag.appendChild(card(p, freshId)));
-      });
-    } else {
-      list.forEach((p) => frag.appendChild(card(p, freshId)));
-    }
-    cards.replaceChildren(frag);
-    updateCounts();
-  }
-
-  function card(p, freshId) {
-    const el = document.createElement('article');
-    el.className = 'card' + (p.id === freshId ? ' fresh' : '');
-    el.dataset.id = p.id;
-    el.innerHTML = `
-      <p class="card-text">${esc(p.text)}</p>
-      <div class="card-src"><button class="src-link" title="원래 문장으로 돌아가기">${esc(p.src.label)}</button><time>${rel(p.t)}</time></div>
-      <ul class="cmts">${p.comments.map((c) => `<li class="cmt"><span>${esc(c.text)}</span><time>${rel(c.t)}</time></li>`).join('')}</ul>
-      <input class="card-add" placeholder="댓글 추가" aria-label="댓글 추가" maxlength="120">
-      <button class="card-del" aria-label="핀 삭제" title="핀 삭제"><svg viewBox="0 0 20 20"><path d="M5 5l10 10M15 5L5 15"/></svg></button>`;
-    el.querySelector('.src-link').onclick = () => goBack(p);
-    el.querySelector('.card-del').onclick = () => removePin(p.id);
-    const peek = (on) => document.querySelectorAll(`mark[data-pin="${p.id}"]`).forEach((m) => m.classList.toggle('peek', on));
-    el.addEventListener('mouseenter', () => peek(true));
-    el.addEventListener('mouseleave', () => peek(false));
-    const add = el.querySelector('.card-add');
-    add.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' || e.isComposing) return;
-      const v = add.value.trim();
-      if (!v) return;
-      p.comments.push({ text: v, t: Date.now() });
-      save(); stepDone('organize'); renderCards();
-      cards.querySelector(`[data-id="${p.id}"] .card-add`)?.focus();
-    });
-    return el;
-  }
-
-  function removePin(id) {
-    const i = state.pins.findIndex((p) => p.id === id);
-    if (i < 0) return;
-    const [p] = state.pins.splice(i, 1);
-    save();
-    document.querySelectorAll('[data-pinnable]').forEach((el) => { if (el.dataset.key === p.key) renderPinnable(el); });
-    renderCards();
-    say('핀을 삭제했습니다');
-  }
-
-  function focusCard(id) {
-    const el = cards.querySelector(`[data-id="${id}"]`);
-    if (!el) return;
-    cards.querySelectorAll('.focus').forEach((c) => c.classList.remove('focus'));
-    el.classList.add('focus');
-    el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }
-
-  function updateCounts() {
-    const n = state.pins.length;
-    $('railCount').textContent = n; $('railCount').dataset.n = n;
-    if (!tray.classList.contains('armed')) $('trayText').textContent = `핀 ${n}개`;
-  }
-
-  // Return: pin → the exact sentence it came from
-  function goBack(p) {
-    setPanel(window.innerWidth > 760 ? 'side' : 'closed');
-    if (p.src.type === 'chat') setSession(p.src.session);
-    stepDone('return');
-    requestAnimationFrame(() => {
-      const marks = document.querySelectorAll(`mark[data-pin="${p.id}"]`);
-      if (!marks.length) return;
-      marks[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
-      marks.forEach((m) => { m.classList.remove('pulse'); void m.offsetWidth; m.classList.add('pulse'); });
-      say(`${p.src.label}의 원래 문장으로 돌아왔습니다`);
-    });
-  }
-
-  // Clicking a highlighted sentence shows its card
-  function openFromMark(mark) {
-    const id = mark.dataset.pin;
-    const inChat = !!mark.closest('#app');
-    if (!inChat) $('app').scrollIntoView({ block: 'center', behavior: 'smooth' });
-    if (state.panel === 'closed' || !inChat) setPanel(inChat ? 'side' : 'full');
-    focusCard(id);
-  }
-  document.addEventListener('click', (e) => {
-    const mark = e.target.closest?.('mark[data-pin]');
-    if (mark && window.getSelection().isCollapsed) openFromMark(mark);
-    if (!e.target.closest?.('#sessionList, #btnSessions')) toggleSessions(false);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.matches?.('mark[data-pin]')) openFromMark(e.target);
-    if (e.key === 'Escape') { toggleSessions(false); if (state.panel !== 'closed' && e.target.closest?.('#app')) setPanel('closed'); }
-  });
-
-  // Controls
-  $('btnSessions').onclick = () => toggleSessions();
-  $('btnPanel').onclick = () => setPanel(state.panel === 'closed' ? 'side' : 'closed');
-  $('btnBoard').onclick = () => setPanel(state.panel === 'full' ? 'closed' : 'full');
-  $('btnExpand').onclick = () => setPanel(state.panel === 'full' ? 'side' : 'full');
-  $('btnClose').onclick = () => setPanel('closed');
-  $('btnSort').onclick = () => {
-    state.sort = state.sort === 'new' ? 'session' : 'new';
-    $('btnSort').title = state.sort === 'new' ? '놓은 순서로 보는 중. 누르면 세션별로 묶습니다' : '세션별로 묶어 보는 중. 누르면 놓은 순서로 봅니다';
-    renderCards();
-  };
-  $('search').addEventListener('input', (e) => { state.query = e.target.value; if (state.query.trim()) stepDone('organize'); renderCards(); });
-  $('btnReset').onclick = () => {
-    seed(); save();
-    state.session = 'plotter'; state.query = ''; $('search').value = '';
-    document.querySelectorAll('.guide .done').forEach((el) => el.classList.remove('done'));
-    setPanel('closed'); renderChat(); renderAllPinnable();
-    say('프로토타입을 처음 상태로 되돌렸습니다');
-  };
-  tray.onclick = () => { $('app').scrollIntoView({ block: 'center', behavior: 'smooth' }); setPanel('full'); };
-
-  // ───────────── Section index ─────────────
-  const links = [...document.querySelectorAll('.index ol a')];
-  const spy = new IntersectionObserver((entries) => {
-    entries.forEach((en) => {
-      if (!en.isIntersecting) return;
-      links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + en.target.id)));
-    });
-  }, { rootMargin: '-25% 0px -65% 0px' });
-  links.forEach((a) => { const t = document.querySelector(a.getAttribute('href')); if (t) spy.observe(t); });
-
-  // ───────────── Boot ─────────────
-  load();
-  renderChat();
-  renderAllPinnable();
-  renderCards();
-  if (window.innerWidth > 760) setPanel('side');
-  setInterval(() => { if (state.panel !== 'closed' && !cards.contains(document.activeElement)) renderCards(); }, 60000);
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[(.+?)\]\(((?:https?:|mailto:)[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+const norm = s => s.replace(/\s+/g, ' ').trim();
+const mobile = matchMedia('(max-width:760px)');
+/* ---------------- content ---------------- */
+const CHATS = window.CP.chats;
+const chatById = id => CHATS.find(c => c.id === id);
+const H = 3600e3;
+const SEED = window.CP.seed(H);
+const KEY = 'claudepin.v4';
+let pins;
+try { pins = JSON.parse(localStorage.getItem(KEY)) || SEED; } catch { pins = SEED; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(pins)); } catch {} };
+/* ---------------- helpers ---------------- */
+function ago(t){
+const s = (Date.now() - t) / 1000;
+if (s < 60) return '방금 전';
+if (s < 3600) return Math.floor(s/60) + '분 전';
+if (s < 86400) return Math.floor(s/3600) + '시간 전';
+return Math.floor(s/86400) + '일 전';
+}
+const ico = (id, cls='i') => `<svg class="${cls}"><use href="#i-${id}"/></svg>`;
+let toastTimer;
+function toast(msg, action){
+$('toastT').textContent = msg;
+$('toastB').style.display = action ? '' : 'none';
+$('toastB').onclick = () => { $('toast').classList.remove('on'); action && action(); };
+$('toast').classList.add('on');
+clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('on'), 2600);
+}
+/* ---------------- sidebar / drawer ---------------- */
+let current = window.CP.start;
+function navHTML(isDrawer){
+return `<div class="brand"><button class="ibtn" aria-label="사이드바">${ico('side')}</button><span class="logo"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path transform="rotate(30 12 12)" d="M9 3h6a1.25 1.25 0 0 1 0 2.5h-.4v3.4l3 3.3c.75.8.18 2.1-.92 2.1H13.2v5.2a1.2 1.2 0 0 1-2.4 0v-5.2H7.32c-1.1 0-1.670-1.3-.92-2.1l3-3.3V5.5H9A1.25 1.25 0 0 1 9 3z"/></svg><b>Claude</b><b class="pin">Pin</b></span></div>
+<div class="nav">
+<button data-act="new">${ico('plus')}새로 만들기</button>
+<button data-act="search">${ico('search')}검색</button>
+<button data-act="proj">${ico('stack')}프로젝트<span class="hplus">${ico('plus')}</span></button>
+<button data-act="art">${ico('art')}아티팩트<span class="hplus">${ico('plus')}</span></button>
+<button data-act="board" id="${isDrawer?'dPins':'sPins'}">${ico('pin')}${isDrawer?'메모':'핀 보드'}<span class="new">NEW</span><span class="badge">${pins.length}</span></button>
+<button data-act="sched">${ico('sched')}예약됨</button>
+${isDrawer ? '' : `<button data-act="plug">${ico('plug')}플러그인</button>`}
+</div>
+<div class="recents">
+<div class="sec">고정됨 ${ico('down')}</div>
+<button class="pj" data-act="proj">${ico('stack')}여남규 알아보기</button>
+<div class="tree">${CHATS.map(c => `<button data-chat="${c.id}" class="${c.id===current?'on':''}">${esc(c.title)}</button>`).join('')}</div>
+<div class="sec">최근 항목 ${ico('down')}</div>
+<div class="rec"><button data-act="other">인턴 지원자 포트폴리오 비교</button><button data-act="other">디자인 면접 질문 정리</button></div>
+</div>
+<div class="me"><div class="av">G</div><div>Guest <span>· 방문자</span></div><div class="sp"></div>${ico('down')}</div>`;
+}
+function renderNav(){
+$('side').innerHTML = navHTML(false);
+$('drawer').innerHTML = navHTML(true);
+}
+function onNav(e){
+const b = e.target.closest('button'); if (!b) return;
+if (b.dataset.chat){ closeDrawer(); openChat(b.dataset.chat); return; }
+const a = b.dataset.act;
+if (a === 'board'){ if (mobile.matches){ closeDrawer(); openMemo(); } else openFull(); }
+else if (a === 'chat' || a === 'new'){ closeDrawer(); closeMemo(); }
+else toast('데모에서는 핀 관련 기능만 동작해요');
+}
+$('side').addEventListener('click', onNav);
+$('drawer').addEventListener('click', onNav);
+/* ---------------- chat ---------------- */
+function renderChat(){
+const c = chatById(current);
+$('ttl').textContent = c.title; $('mttl').textContent = c.title;
+let html = mobile.matches && !mcoachClosed ? `<div class="mcoach" id="mcoach">${ico('pin')}<span>문장을 <b>길게 눌러</b> 메모에 꽂아 보세요</span><button class="again" onclick="openIntro()">사용법</button><button class="x" id="mcoachX">${ico('x')}</button></div>` : '';
+let bi = 0;
+for (const m of c.msgs){
+if (m.u){ html += `<div class="msg-u"><div>${esc(m.u)}</div></div>`; continue; }
+if (m.tool) html += `<div class="tool">${esc(m.tool)} ${ico('right')}</div>`;
+html += '<div class="answer">';
+for (const [t, v] of m.a){
+if (t === 'p') html += `<p class="blk" data-b="${bi++}">${md(v)}</p>`;
+else if (t === 'h') html += `<h4 class="blk" data-b="${bi++}">${md(v)}</h4>`;
+else html += '<ul>' + v.map(x => `<li class="blk" data-b="${bi++}">${md(x)}</li>`).join('') + '</ul>';
+}
+html += `</div><div class="actions"><span>${ico('copy')}</span><span>${ico('speak')}</span><span>${ico('thumb')}</span><span>${ico('thumbd')}</span><span>${ico('retry')}</span></div>`;
+}
+$('thread').innerHTML = html;
+const x = $('mcoachX'); if (x) x.onclick = () => { mcoachClosed = true; $('mcoach').remove(); };
+document.querySelectorAll('.tree button').forEach(b => b.classList.toggle('on', b.dataset.chat === current));
+}
+let mcoachClosed = false;
+function openChat(id){
+closeMemo(); closeFull();
+if (id !== current){ current = id; renderChat(); $('scroll').scrollTop = 0; }
+}
+/* return: open source chat, scroll, highlight */
+function textRange(root, text){
+const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+const nodes = []; let all = '';
+while (walker.nextNode()){ nodes.push([walker.currentNode, all.length]); all += walker.currentNode.data; }
+let i = all.indexOf(text);
+let len = text.length;
+if (i < 0){ const k = text.slice(0, 18); i = all.indexOf(k); if (i < 0) return null; len = Math.min(text.length, all.length - i); }
+const r = document.createRange();
+const pos = (off) => { for (let n = nodes.length - 1; n >= 0; n--) if (nodes[n][1] <= off) return [nodes[n][0], off - nodes[n][1]]; return [nodes[0][0], 0]; };
+const [sn, so] = pos(i), [en, eo] = pos(i + len);
+r.setStart(sn, so); r.setEnd(en, Math.min(eo, en.data.length));
+return r;
+}
+function findBlock(text){
+const key = text.slice(0, 18);
+return [...document.querySelectorAll('#thread .blk')].find(b => norm(b.textContent).includes(text)) ||
+[...document.querySelectorAll('#thread .blk')].find(b => norm(b.textContent).includes(key));
+}
+function goReturn(pin){
+openChat(pin.chat);
+if (mobile.matches) closeMemo();
+requestAnimationFrame(() => {
+const blk = findBlock(pin.text);
+if (!blk) return;
+blk.scrollIntoView({block:'center', behavior:'smooth'});
+blk.classList.remove('flash'); void blk.offsetWidth; blk.classList.add('flash');
+const r = textRange(blk, pin.text);
+if (r && window.CSS && CSS.highlights){
+CSS.highlights.set('pinret', new Highlight(r));
+clearTimeout(goReturn.t); goReturn.t = setTimeout(() => CSS.highlights.delete('pinret'), 2600);
+}
+step(3);
+});
+}
+/* ---------------- board (desktop) ---------------- */
+let boardOpen = false, desktopAutoBoard = false, bq = '', fq = '', fchat = 'all';
+function cardHTML(p, isNew){
+const c = chatById(p.chat);
+return `<div class="card${isNew?' pop':''}" data-id="${p.id}">
+<button class="more" data-act="more" aria-label="더보기">${ico('dots')}</button>
+<div class="menu"><button data-act="memo">${ico('edit')}메모 편집</button><button class="del" data-act="del">${ico('trash')}삭제</button></div>
+<div class="tx">${esc(p.text)}</div>
+<div class="meta"><button class="src" data-act="go" title="원래 대화로 돌아가기 (카드를 눌러도 돼요)"><span>${esc(c ? c.title : '대화')}</span>${ico('arrow')}</button><span class="when">${ago(p.t)}</span></div>
+<div class="memo">${p.memo ? `<div class="mt">${esc(p.memo)}</div>` : `<button class="add" data-act="memo">+ 메모 추가</button>`}</div>
+</div>`;
+}
+const match = (p, q) => !q || (p.text + ' ' + p.memo).toLowerCase().includes(q.toLowerCase());
+let freshId = null;
+function renderBoard(){
+const list = pins.filter(p => match(p, bq));
+$('blist').innerHTML = `<i class="insline" id="insline"></i>` +
+(list.length ? list.map(p => cardHTML(p, p.id === freshId)).join('') : `<div class="empty">${bq ? '검색 결과가 없어요' : '아직 꽂은 문장이 없어요'}</div>`);
+$('bcount').textContent = pins.length + '개';
+$('pinCnt').textContent = pins.length;
+document.querySelectorAll('.nav .badge').forEach(b => b.textContent = pins.length);
+if ($('full').classList.contains('on')) renderFull();
+if ($('mmemo').classList.contains('on')) renderMemo();
+}
+function openBoard(auto){
+if (mobile.matches) return;
+boardOpen = true; desktopAutoBoard = !!auto;
+$('board').classList.add('open'); $('pinToggle').classList.add('on'); $('main').classList.add('boarded');
+}
+function closeBoard(){
+boardOpen = false; desktopAutoBoard = false;
+$('board').classList.remove('open'); $('pinToggle').classList.remove('on'); $('main').classList.remove('boarded');
+}
+$('pinToggle').onclick = () => boardOpen ? closeBoard() : openBoard(false);
+$('bClose').onclick = closeBoard;
+$('bExpand').onclick = () => { closeBoard(); openFull(); };
+$('bq').oninput = e => { bq = e.target.value; renderBoard(); };
+function onCardClick(e){
+if (eatClick) return;
+const card = e.target.closest('.card'); if (!card) return;
+const pin = pins.find(p => p.id === card.dataset.id); if (!pin) return;
+const act = e.target.closest('[data-act]')?.dataset.act;
+if (act === 'go' || (!act && !e.target.closest('.memo'))){ if ($('full').classList.contains('on')) closeFull(); goReturn(pin); }
+else if (act === 'more'){ const m = card.querySelector('.menu'); const on = m.classList.contains('on'); document.querySelectorAll('.menu.on').forEach(x => x.classList.remove('on')); m.classList.toggle('on', !on); }
+else if (act === 'del'){ pins = pins.filter(p => p !== pin); save(); renderBoard(); toast('핀을 삭제했어요'); }
+else if (act === 'memo') editMemo(card, pin);
+}
+function editMemo(card, pin){
+card.querySelector('.menu').classList.remove('on');
+const box = card.querySelector('.memo');
+box.innerHTML = `<textarea placeholder="이 문장을 왜 꽂았는지 남겨 두세요">${esc(pin.memo)}</textarea><div class="mh">Enter 저장 · Esc 취소</div>`;
+const ta = box.querySelector('textarea'); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+const done = (keep) => { if (keep){ pin.memo = ta.value.trim(); save(); } freshId = null; renderBoard(); };
+ta.onkeydown = ev => { if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing){ ev.preventDefault(); done(true); } if (ev.key === 'Escape') done(false); };
+ta.onblur = () => done(true);
+}
+$('blist').addEventListener('click', onCardClick);
+$('grid').addEventListener('click', onCardClick);
+document.addEventListener('click', e => { if (!e.target.closest('.more,.menu')) document.querySelectorAll('.menu.on').forEach(x => x.classList.remove('on')); });
+/* full board (organize) */
+function renderFull(){
+const list = pins.filter(p => match(p, fq) && (fchat === 'all' || p.chat === fchat));
+const used = [...new Set(pins.map(p => p.chat))];
+$('chips').innerHTML = `<button class="chip ${fchat==='all'?'on':''}" data-c="all">전체 ${pins.length}</button>` +
+used.map(id => `<button class="chip ${fchat===id?'on':''}" data-c="${id}">${esc(chatById(id).title)}</button>`).join('');
+$('grid').innerHTML = list.length ? list.map(p => cardHTML(p)).join('') : '<div class="empty">조건에 맞는 핀이 없어요</div>';
+$('fcount').textContent = pins.length + '개의 문장';
+}
+function openFull(){ closeBoard(); $('full').classList.add('on'); renderFull(); document.querySelectorAll('#sPins').forEach(b => b.classList.add('on')); }
+function closeFull(){ $('full').classList.remove('on'); document.querySelectorAll('#sPins').forEach(b => b.classList.remove('on')); }
+$('fClose').onclick = closeFull;
+$('fq').oninput = e => { fq = e.target.value; renderFull(); };
+$('chips').onclick = e => { const b = e.target.closest('.chip'); if (b){ fchat = b.dataset.c; renderFull(); } };
+function addPin(text, chat, beforeId){
+const p = { id: 'p' + Date.now().toString(36), chat, text, t: Date.now(), memo: '' };
+const at = beforeId === undefined ? 0 : beforeId === null ? pins.length : Math.max(0, pins.findIndex(x => x.id === beforeId));
+pins.splice(at, 0, p); freshId = p.id; save(); renderBoard();
+setTimeout(() => { freshId = null; }, 600);
+return p;
+}
+/* ---------------- coach steps ---------------- */
+function step(n){ for (let i = 1; i <= n; i++) $('st' + i)?.classList.add('done'); }
+$('coachX').onclick = () => $('coach').remove();
+$('coachAgain').onclick = () => window.openIntro && window.openIntro();
+/* insertion line: shared by text-drop and card-reorder */
+function placeLine(cy, skipId){
+const list = $('blist'), lr = list.getBoundingClientRect();
+const cards = [...list.querySelectorAll('.card')].filter(c => c.dataset.id !== skipId);
+let idx = cards.findIndex(c => { const r = c.getBoundingClientRect(); return cy < r.top + r.height / 2; });
+if (idx < 0) idx = cards.length;
+let y;
+if (!cards.length) y = 8;
+else if (idx < cards.length) y = cards[idx].offsetTop - 6;
+else { const l = cards[cards.length - 1]; y = l.offsetTop + l.offsetHeight + 4; }
+$('insline').style.top = y + 'px';
+return { before: idx < cards.length ? cards[idx].dataset.id : null, gy: lr.top + y - list.scrollTop + 1 };
+}
+function makeGhost(text){
+const g = document.createElement('div'); g.className = 'ghost hot';
+g.innerHTML = `<div class="gt">${esc(text)}</div>`;
+document.body.appendChild(g); return g;
+}
+/* ---------------- board: drag a card to reorder ---------------- */
+let cdrag = null, eatClick = false;
+$('blist').addEventListener('mousedown', e => {
+if (e.button !== 0 || mobile.matches) return;
+const card = e.target.closest('.card');
+if (!card || e.target.closest('button,textarea,.memo,.menu')) return;
+e.preventDefault();
+cdrag = { id: card.dataset.id, card, sx: e.clientX, sy: e.clientY, live: false };
+});
+function cardDragMove(e){
+if (!cdrag.live){
+if (Math.hypot(e.clientX - cdrag.sx, e.clientY - cdrag.sy) < 6) return;
+cdrag.live = true;
+const p = pins.find(x => x.id === cdrag.id);
+cdrag.el = makeGhost(p ? p.text : '');
+cdrag.card.classList.add('lifted');
+$('board').classList.add('dragging');
+document.body.classList.add('grabbing');
+}
+const over = e.clientX > $('board').getBoundingClientRect().left;
+$('board').classList.toggle('over', over);
+cdrag.over = over;
+cdrag.el.style.left = e.clientX + 'px';
+if (over){ const s = placeLine(e.clientY, cdrag.id); cdrag.before = s.before; cdrag.el.style.top = s.gy + 'px'; }
+else cdrag.el.style.top = e.clientY + 'px';
+}
+function cardDragEnd(){
+const d = cdrag; cdrag = null;
+if (!d.live) return;
+eatClick = true; setTimeout(() => { eatClick = false; }, 0);
+d.el.remove(); d.card.classList.remove('lifted');
+$('board').classList.remove('dragging', 'over');
+document.body.classList.remove('grabbing');
+if (!d.over) return;
+const i = pins.findIndex(x => x.id === d.id); if (i < 0) return;
+const [p] = pins.splice(i, 1);
+const at = d.before == null ? pins.length : pins.findIndex(x => x.id === d.before);
+pins.splice(at < 0 ? pins.length : at, 0, p);
+freshId = p.id; save(); renderBoard(); setTimeout(() => { freshId = null; }, 600);
+}
+/* ---------------- desktop: select → drag → drop ---------------- */
+let pending = null, drag = null;
+function clearPending(){ pending = null; $('hint').classList.remove('on'); document.body.classList.remove('grab'); }
+function checkSelection(){
+if (mobile.matches || drag) return;
+const sel = getSelection();
+if (!sel.rangeCount || sel.isCollapsed){ clearPending(); return; }
+const r = sel.getRangeAt(0);
+const node = r.commonAncestorContainer.nodeType === 1 ? r.commonAncestorContainer : r.commonAncestorContainer.parentElement;
+if (!node.closest('.answer')){ clearPending(); return; }
+const text = norm(sel.toString());
+if (text.length < 4){ clearPending(); return; }
+pending = { text, chat: current, range: r.cloneRange() };
+const rects = r.getClientRects(); const last = rects[rects.length - 1] || r.getBoundingClientRect();
+const first = rects[0] || last;
+const h = $('hint'); h.style.left = Math.min(innerWidth - 160, Math.max(160, (first.left + last.right) / 2)) + 'px'; h.style.top = first.top + 'px';
+h.classList.add('on');
+step(1);
+}
+$('scroll').addEventListener('mouseup', () => setTimeout(checkSelection, 0));
+document.addEventListener('keyup', e => { if (e.shiftKey) checkSelection(); });
+$('scroll').addEventListener('scroll', () => { if (pending && !drag) clearPending(); }, {passive:true});
+function inPending(x, y){
+if (!pending) return false;
+return [...pending.range.getClientRects()].some(r => x >= r.left - 2 && x <= r.right + 2 && y >= r.top - 2 && y <= r.bottom + 2);
+}
+$('scroll').addEventListener('mousedown', e => {
+if (mobile.matches || e.button !== 0 || !inPending(e.clientX, e.clientY)) return;
+e.preventDefault();
+drag = { sx: e.clientX, sy: e.clientY, live: false, el: null };
+});
+document.addEventListener('mousemove', e => {
+if (cdrag){ cardDragMove(e); return; }
+if (drag){
+if (!drag.live && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > 6){
+drag.live = true;
+const g = document.createElement('div'); g.className = 'ghost';
+g.innerHTML = `<div class="gt">${esc(pending.text)}</div><div class="gs">${ico('pin')}${esc(chatById(current).title)}</div>`;
+document.body.appendChild(g); drag.el = g;
+$('hint').classList.remove('on');
+$('board').classList.add('dragging');
+document.body.classList.add('grabbing');
+}
+if (drag.live){
+drag.el.style.left = e.clientX + 'px'; drag.el.style.top = e.clientY + 'px';
+const mainR = $('main').getBoundingClientRect();
+if (!boardOpen && e.clientX > mainR.right - 240) openBoard(true);
+const over = boardOpen && e.clientX > $('board').getBoundingClientRect().left;
+$('board').classList.toggle('over', over); drag.el.classList.toggle('hot', over);
+drag.over = over;
+if (over){ const s = placeLine(e.clientY); drag.before = s.before; drag.el.style.top = s.gy + 'px'; }
+}
+return;
+}
+document.body.classList.toggle('grab', !!pending && inPending(e.clientX, e.clientY));
+// auto-close: cursor back into chat area
+if (boardOpen && desktopAutoBoard){
+const left = $('board').getBoundingClientRect().left;
+if (e.clientX < left - 30){
+if (!autoT) autoT = setTimeout(() => { if (!$('board').contains(document.activeElement)) closeBoard(); autoT = null; }, 450);
+} else { clearTimeout(autoT); autoT = null; }
+}
+});
+let autoT = null;
+document.addEventListener('mouseup', e => {
+if (cdrag){ cardDragEnd(); return; }
+if (!drag) return;
+const d = drag; drag = null;
+$('board').classList.remove('dragging', 'over');
+document.body.classList.remove('grabbing');
+if (!d.live){ getSelection().removeAllRanges(); clearPending(); return; }
+if (d.over){
+d.el.remove();
+addPin(pending.text, pending.chat, d.before);
+getSelection().removeAllRanges(); clearPending();
+step(2);
+} else {
+d.el.classList.add('back'); setTimeout(() => d.el.remove(), 300);
+if (desktopAutoBoard) closeBoard();
+}
+});
+$('hintPin').addEventListener('mousedown', e => e.stopPropagation());
+$('hintReply').addEventListener('mousedown', e => e.stopPropagation());
+$('hintReply').onclick = () => {
+if (!pending) return;
+$('inp').value = '"' + pending.text + '" — '; $('inp').focus(); $('send').classList.add('ok');
+getSelection().removeAllRanges(); clearPending();
+};
+$('hintPin').onclick = () => {
+if (!pending) return;
+openBoard(true); addPin(pending.text, pending.chat);
+getSelection().removeAllRanges(); clearPending(); step(2);
+};
+/* ---------------- mobile: long press → 메모 + ---------------- */
+let lp = null, msel = null;
+function caretAt(x, y){
+if (document.caretPositionFromPoint){ const p = document.caretPositionFromPoint(x, y); return p && [p.offsetNode, p.offset]; }
+if (document.caretRangeFromPoint){ const r = document.caretRangeFromPoint(x, y); return r && [r.startContainer, r.startOffset]; }
+return null;
+}
+function sentenceAt(x, y){
+const c = caretAt(x, y); if (!c) return null;
+const blk = (c[0].nodeType === 1 ? c[0] : c[0].parentElement).closest('.blk');
+if (!blk || blk.tagName === 'H4') return null;
+const walker = document.createTreeWalker(blk, NodeFilter.SHOW_TEXT); let off = 0, abs = -1;
+while (walker.nextNode()){ if (walker.currentNode === c[0]){ abs = off + c[1]; break; } off += walker.currentNode.data.length; }
+const all = blk.textContent; if (abs < 0) abs = 0;
+let s = 0;
+for (let i = Math.min(abs, all.length - 1) - 1; i > 0; i--){ if (/[.!?:]/.test(all[i]) && /\s/.test(all[i+1] || '')){ s = i + 1; break; } }
+let e = all.length;
+for (let i = Math.max(abs, s); i < all.length; i++){ if (/[.!?]/.test(all[i]) && (i === all.length - 1 || /\s/.test(all[i+1]))){ e = i + 1; break; } }
+const text = norm(all.slice(s, e)); if (text.length < 4) return null;
+return { blk, text, range: textRange(blk, text) };
+}
+function showMSel(sel){
+msel = sel;
+if (window.CSS && CSS.highlights && sel.range) CSS.highlights.set('pinsel', new Highlight(sel.range));
+const rs = sel.range.getClientRects(); const a = rs[0], b = rs[rs.length - 1];
+$('h1').style.left = a.left + 'px'; $('h1').style.top = (a.top + 2) + 'px';
+$('h2').style.left = b.right + 'px'; $('h2').style.top = (b.bottom - 2) + 'px';
+$('h1').classList.add('on'); $('h2').classList.add('on');
+const sc = $('selchip'); sc.style.left = Math.min(innerWidth - 90, Math.max(90, (a.left + b.right) / 2)) + 'px'; sc.style.top = Math.max(70, a.top) + 'px';
+sc.classList.add('on');
+}
+function hideMSel(){
+msel = null; ['h1','h2','selchip'].forEach(id => $(id).classList.remove('on'));
+if (window.CSS && CSS.highlights) CSS.highlights.delete('pinsel');
+}
+$('thread').addEventListener('pointerdown', e => {
+if (!mobile.matches || e.pointerType === 'mouse' && !e.isPrimary) return;
+if (msel){ hideMSel(); }
+const x = e.clientX, y = e.clientY;
+clearTimeout(lp?.t);
+lp = { x, y, t: setTimeout(() => {
+const s = sentenceAt(x, y);
+if (s){ if (navigator.vibrate) navigator.vibrate(8); showMSel(s); }
+lp = null;
+}, 460) };
+});
+$('thread').addEventListener('pointermove', e => { if (lp && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) > 10){ clearTimeout(lp.t); lp = null; } });
+['pointerup','pointercancel'].forEach(ev => $('thread').addEventListener(ev, () => { if (lp){ clearTimeout(lp.t); lp = null; } }));
+$('thread').addEventListener('contextmenu', e => { if (mobile.matches) e.preventDefault(); });
+$('scroll').addEventListener('scroll', () => { if (msel) hideMSel(); }, {passive:true});
+$('selCancel').onclick = hideMSel;
+$('selGo').onclick = () => {
+if (!msel) return;
+addPin(msel.text, current); hideMSel();
+toast('메모에 꽂았어요', openMemo);
+};
+/* mobile drawer + memo list */
+function openDrawer(){ $('drawer').classList.add('on'); $('scrim').classList.add('on'); }
+function closeDrawer(){ $('drawer').classList.remove('on'); $('scrim').classList.remove('on'); }
+$('mMenu').onclick = openDrawer; $('mmBack').onclick = openDrawer; $('scrim').onclick = closeDrawer;
+let mq = '';
+function renderMemo(){
+const list = pins.filter(p => match(p, mq));
+$('mlist').innerHTML = list.map(p => `<div class="mrow" data-id="${p.id}"><button class="del">삭제</button><div class="fg">
+<div class="t1">${esc(p.text)}</div>
+${p.memo ? `<div class="t3">${esc(p.memo)}</div>` : ''}
+<div class="t2"><b>${esc(chatById(p.chat).title)}</b>· ${ago(p.t)}</div>
+<svg class="i chev"><use href="#i-right"/></svg></div></div>`).join('') +
+(list.length ? '<div class="mswipehint">← 왼쪽으로 밀어서 삭제 · 탭하면 원래 대화로</div>' : '<div class="empty">아직 꽂은 문장이 없어요</div>');
+}
+function openMemo(){ closeDrawer(); renderMemo(); $('mmemo').classList.add('on'); }
+function closeMemo(){ $('mmemo').classList.remove('on'); }
+$('mq').oninput = e => { mq = e.target.value; renderMemo(); };
+$('mmNew').onclick = closeMemo;
+let sw = null;
+$('mlist').addEventListener('pointerdown', e => {
+const fg = e.target.closest('.fg'); if (!fg) return;
+document.querySelectorAll('.mrow .fg').forEach(f => { if (f !== fg) f.style.transform = ''; });
+const base = fg.style.transform ? -84 : 0;
+sw = { fg, x: e.clientX, y: e.clientY, base, dx: 0, moved: false, axis: null };
+});
+$('mlist').addEventListener('pointermove', e => {
+if (!sw) return;
+const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+if (!sw.axis && Math.hypot(dx, dy) > 8) sw.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+if (sw.axis !== 'x') return;
+sw.moved = true; sw.dx = dx;
+sw.fg.classList.add('drag');
+sw.fg.style.transform = `translateX(${Math.min(0, Math.max(-110, sw.base + dx))}px)`;
+});
+function endSwipe(e){
+if (!sw) return;
+const s = sw; sw = null; s.fg.classList.remove('drag');
+if (s.moved){ s.fg.style.transform = (s.base + s.dx < -42) ? 'translateX(-84px)' : ''; return; }
+if (s.axis === 'y') return;
+if (s.base){ s.fg.style.transform = ''; return; }
+if (e.type === 'pointerup'){ const p = pins.find(x => x.id === s.fg.parentElement.dataset.id); if (p) goReturn(p); }
+}
+$('mlist').addEventListener('pointerup', endSwipe);
+$('mlist').addEventListener('pointercancel', endSwipe);
+$('mlist').addEventListener('click', e => {
+const d = e.target.closest('.del'); if (!d) return;
+const row = d.parentElement; const id = row.dataset.id;
+row.style.height = row.offsetHeight + 'px'; requestAnimationFrame(() => { row.style.height = '0px'; row.style.opacity = '0'; });
+setTimeout(() => { pins = pins.filter(p => p.id !== id); save(); renderBoard(); renderNav(); }, 260);
+});
+/* composer */
+$('inp').addEventListener('input', e => $('send').classList.toggle('ok', !!e.target.value.trim()));
+function send(){
+const v = $('inp').value.trim(); if (!v) return;
+const c = chatById(current);
+c.msgs.push({u: v}, {a: [['p','이 데모에서는 답변 생성 대신 **Claude Pin 인터랙션**만 체험할 수 있어요. 위 답변에서 마음에 드는 문장을 드래그하거나 길게 눌러 꽂아 보세요.']]});
+$('inp').value = ''; $('send').classList.remove('ok');
+renderChat(); $('scroll').scrollTop = $('scroll').scrollHeight;
+}
+$('send').onclick = send;
+$('inp').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); } });
+/* init */
+renderNav(); renderChat(); renderBoard();
+mobile.addEventListener('change', () => { closeBoard(); closeFull(); closeMemo(); hideMSel(); renderChat(); });
+setInterval(() => { if (boardOpen) renderBoard(); }, 60000);
 })();
