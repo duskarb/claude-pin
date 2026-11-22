@@ -34,7 +34,7 @@ clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.rem
 /* ---------------- sidebar / drawer ---------------- */
 let current = window.CP.start;
 function navHTML(isDrawer){
-return `<div class="brand"><button class="ibtn" aria-label="사이드바">${ico('side')}</button><span class="logo"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path transform="rotate(30 12 12)" d="M9 3h6a1.25 1.25 0 0 1 0 2.5h-.4v3.4l3 3.3c.75.8.18 2.1-.92 2.1H13.2v5.2a1.2 1.2 0 0 1-2.4 0v-5.2H7.32c-1.1 0-1.670-1.3-.92-2.1l3-3.3V5.5H9A1.25 1.25 0 0 1 9 3z"/></svg><b>Claude</b><b class="pin">Pin</b></span></div>
+return `<div class="brand"><button class="ibtn" aria-label="사이드바">${ico('side')}</button><span class="logo"><b>Claude</b><b class="pin">Pin</b></span><span class="mode"><button class="on" aria-label="채팅">${ico('chat')}</button><button aria-label="코드">${ico('code')}</button></span></div>
 <div class="nav">
 <button data-act="new">${ico('plus')}새로 만들기</button>
 <button data-act="search">${ico('search')}검색</button>
@@ -51,7 +51,7 @@ ${isDrawer ? '' : `<button data-act="plug">${ico('plug')}플러그인</button>`}
 <div class="sec">최근 항목 ${ico('down')}</div>
 <div class="rec"><button data-act="other">인턴 지원자 포트폴리오 비교</button><button data-act="other">디자인 면접 질문 정리</button></div>
 </div>
-<div class="me"><div class="av">G</div><div>Guest <span>· 방문자</span></div><div class="sp"></div>${ico('down')}</div>`;
+<div class="me"><div class="av">G</div><div>Guest <span>· 방문자</span></div>${ico('down')}<div class="sp"></div><button class="ibtn" aria-label="기기">${ico('device')}</button></div>`;
 }
 function renderNav(){
 $('side').innerHTML = navHTML(false);
@@ -481,6 +481,8 @@ renderChat(); $('scroll').scrollTop = $('scroll').scrollHeight;
 $('send').onclick = send;
 $('inp').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); } });
 /* init */
+$('scroll').addEventListener('scroll', () => $('main').classList.toggle('scrolled', $('scroll').scrollTop > 2), {passive:true});
+$('panelBtn').onclick = () => $('pinToggle').click();
 renderNav(); renderChat(); renderBoard();
 mobile.addEventListener('change', () => { closeBoard(); closeFull(); closeMemo(); hideMSel(); renderChat(); });
 setInterval(() => { if (boardOpen) renderBoard(); }, 60000);
